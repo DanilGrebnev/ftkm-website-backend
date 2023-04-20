@@ -20,7 +20,7 @@ import { ValidateObjectId } from './shared/validate-id.pipes'
 export class NewsController {
     constructor(private NewsService: NewsService) {}
 
-    @Get('')
+    @Get()
     async getNews(@Res({ passthrough: true }) res: Response) {
         const news = await this.NewsService.getNews()
 

@@ -7,7 +7,8 @@ import { CreateNewsDTO } from './dto/create-news.dto'
 @Injectable()
 export class NewsService {
     constructor(
-        @InjectModel('News') private readonly newsModel: Model<INews>,
+        @InjectModel('News')
+        private readonly newsModel: Model<INews>,
     ) {}
 
     async getNews(): Promise<INews[]> {
@@ -28,16 +29,10 @@ export class NewsService {
         return await newNews.save()
     }
 
-    async editNews(
-        newsID: string,
-        createNewsDTO: CreateNewsDTO,
-    ): Promise<INews> {
-        const editNews = await this.newsModel.findByIdAndUpdate(
-            newsID,
-            createNewsDTO,
-            { new: true },
-        )
-
+    async editNews(newsID: string, createNewsDTO: CreateNewsDTO): Promise<INews> {
+        const editNews = await this.newsModel.findByIdAndUpdate(newsID, createNewsDTO, {
+            new: true,
+        })
         return editNews
     }
 
