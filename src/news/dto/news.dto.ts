@@ -1,6 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger/dist/decorators/api-property.decorator'
-
-export class CreateNewsDTO {
+/**
+ * Date transfer object - объект, который нужен для того,
+ * чтобы знать, какой body придёт с запросом
+ */
+export class NewsDTO {
     @ApiProperty()
     readonly title: string
     @ApiProperty()

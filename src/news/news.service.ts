@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common'
 import { Model } from 'mongoose'
 import { InjectModel } from '@nestjs/mongoose'
 import { INews } from './interfaces/news.interface'
-import { CreateNewsDTO } from './dto/create-news.dto'
+import { NewsDTO } from './dto/news.dto'
 
 @Injectable()
 export class NewsService {
@@ -23,9 +23,9 @@ export class NewsService {
         return oneNews
     }
 
-    async addNews(CreateNewsDTO: CreateNewsDTO): Promise<INews> {
+    async addNews(NewsDTO: NewsDTO): Promise<INews> {
         try {
-            const newNews = new this.newsModel(CreateNewsDTO)
+            const newNews = new this.newsModel(NewsDTO)
 
             return await newNews.save()
         } catch (error) {
@@ -33,9 +33,9 @@ export class NewsService {
         }
     }
 
-    async editNews(newsID: string, CreateNewsDTO: CreateNewsDTO): Promise<INews | any> {
+    async editNews(newsID: string, NewsDTO: NewsDTO): Promise<INews | any> {
         try {
-            const editNews = await this.newsModel.findByIdAndUpdate(newsID, CreateNewsDTO, {
+            const editNews = await this.newsModel.findByIdAndUpdate(newsID, NewsDTO, {
                 new: true,
                 upsert: true,
             })

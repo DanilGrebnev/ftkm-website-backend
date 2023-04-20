@@ -13,9 +13,9 @@ import {
 } from '@nestjs/common'
 import { Request, Response } from 'express'
 import { NewsService } from './news.service'
-import { CreateNewsDTO } from './dto/create-news.dto'
+import { NewsDTO } from './dto/news.dto'
 import { ValidateObjectId } from './shared/validate-id.pipes'
-import { ApiTags } from '@nestjs/swagger'
+import { ApiTags, ApiBody, ApiResponse } from '@nestjs/swagger'
 
 //Контроллер API новостей news
 @ApiTags('news')
@@ -24,6 +24,11 @@ export class NewsController {
     constructor(private NewsService: NewsService) {}
 
     @Get()
+    @ApiResponse({
+        status: 200,
+        description: 'return all news',
+        type: [NewsDTO],
+    })
     async getNews(@Res({ passthrough: true }) res: Response) {
         const news = await this.NewsService.getNews()
 
@@ -31,6 +36,11 @@ export class NewsController {
     }
 
     @Get(':newsID')
+    @ApiResponse({
+        status: 200,
+        description: 'return one news',
+        type: NewsDTO,
+    })
     async getOneNews(
         @Res() res: Response,
         @Param('newsID', new ValidateObjectId()) newsID: string,
@@ -45,8 +55,9 @@ export class NewsController {
     }
 
     @Post()
-    async addNews(@Res() res: Response, @Body() CreateNewsDTO: CreateNewsDTO) {
-        const newNews = await this.NewsService.addNews(CreateNewsDTO)
+    @ApiBody({ type: NewsDTO })
+    async addNews(@Res() res: Response, @Body() NewsDTO: NewsDTO) {
+        const newNews = await this.NewsService.addNews(NewsDTO)
 
         return res.status(HttpStatus.OK).json({
             news: newNews,
@@ -54,12 +65,13 @@ export class NewsController {
     }
 
     @Put(':newsID')
+    @ApiBody({ type: NewsDTO })
     async editNews(
         @Res() res: Response,
         @Param('newsID', new ValidateObjectId()) newsID: string,
-        @Body() CreateNewsDTO: CreateNewsDTO,
+        @Body() NewsDTO: NewsDTO,
     ) {
-        const serviceRes = await this.NewsService.editNews(newsID, CreateNewsDTO)
+        const serviceRes = await this.NewsService.editNews(newsID, NewsDTO)
 
         if (!serviceRes) {
             return res.status(HttpStatus.BAD_REQUEST).json({ message: 'Ошибка обновления статьи' })
