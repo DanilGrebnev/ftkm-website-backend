@@ -18,8 +18,10 @@ export const NewsSchema = new Schema(
             required: true,
             type: String,
         },
+        
         imgUrl: String,
     },
+
     {
         timestamps: true,
         versionKey: false,

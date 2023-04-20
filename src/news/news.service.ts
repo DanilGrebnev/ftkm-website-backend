@@ -24,16 +24,28 @@ export class NewsService {
     }
 
     async addNews(CreateNewsDTO: CreateNewsDTO): Promise<INews> {
-        const newNews = new this.newsModel(CreateNewsDTO)
+        try {
+            const newNews = new this.newsModel(CreateNewsDTO)
 
-        return await newNews.save()
+            return await newNews.save()
+        } catch (error) {
+            return error
+        }
     }
 
-    async editNews(newsID: string, createNewsDTO: CreateNewsDTO): Promise<INews> {
-        const editNews = await this.newsModel.findByIdAndUpdate(newsID, createNewsDTO, {
-            new: true,
-        })
-        return editNews
+    async editNews(newsID: string, CreateNewsDTO: CreateNewsDTO): Promise<INews | any> {
+        try {
+            const editNews = await this.newsModel.findByIdAndUpdate(newsID, CreateNewsDTO, {
+                new: true,
+                upsert: true,
+            })
+
+            console.log(editNews)
+
+            return editNews
+        } catch (error) {
+            return error
+        }
     }
 
     async deleteNews(newsID: string) {

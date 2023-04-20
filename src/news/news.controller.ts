@@ -15,7 +15,10 @@ import { Request, Response } from 'express'
 import { NewsService } from './news.service'
 import { CreateNewsDTO } from './dto/create-news.dto'
 import { ValidateObjectId } from './shared/validate-id.pipes'
+import { ApiTags } from '@nestjs/swagger'
 
+//Контроллер API новостей news
+@ApiTags('news')
 @Controller('news')
 export class NewsController {
     constructor(private NewsService: NewsService) {}
@@ -46,8 +49,32 @@ export class NewsController {
         const newNews = await this.NewsService.addNews(CreateNewsDTO)
 
         return res.status(HttpStatus.OK).json({
-            message: 'Post has been submitted successfully!',
             news: newNews,
         })
+    }
+
+    @Put(':newsID')
+    async editNews(
+        @Res() res: Response,
+        @Param('newsID', new ValidateObjectId()) newsID: string,
+        @Body() CreateNewsDTO: CreateNewsDTO,
+    ) {
+        const serviceRes = await this.NewsService.editNews(newsID, CreateNewsDTO)
+
+        if (!serviceRes) {
+            return res.status(HttpStatus.BAD_REQUEST).json({ message: 'Ошибка обновления статьи' })
+        }
+
+        return res.status(HttpStatus.OK).json(serviceRes)
+    }
+
+    @Delete(':newsID')
+    async deleteNews(
+        @Res() res: Response,
+        @Param('newsID', new ValidateObjectId()) newsID: string,
+    ) {
+        const response = this.NewsService.deleteNews(newsID)
+
+        return res.status(HttpStatus.OK).json(response)
     }
 }
