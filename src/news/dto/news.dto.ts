@@ -1,4 +1,7 @@
-import { ApiProperty } from '@nestjs/swagger/dist/decorators/api-property.decorator'
+import {
+    ApiProperty,
+    ApiPropertyOptional,
+} from '@nestjs/swagger/dist/decorators/api-property.decorator'
 /**
  * Date transfer object - объект, который нужен для того,
  * чтобы знать, какой body придёт с запросом
@@ -12,8 +15,6 @@ export class NewsDTO {
     readonly body: string
     @ApiProperty()
     readonly author: string
-    @ApiProperty({
-        required: false,
-    })
+    @ApiPropertyOptional()
     readonly imgUrl?: string
 }

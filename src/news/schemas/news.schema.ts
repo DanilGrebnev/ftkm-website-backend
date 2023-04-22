@@ -1,4 +1,4 @@
-import { Schema } from 'mongoose'
+import { Mongoose, Schema } from 'mongoose'
 
 export const NewsSchema = new Schema(
     {
@@ -6,6 +6,7 @@ export const NewsSchema = new Schema(
             required: true,
             type: String,
         },
+
         description: {
             required: true,
             type: String,
@@ -18,7 +19,7 @@ export const NewsSchema = new Schema(
             required: true,
             type: String,
         },
-        
+
         imgUrl: String,
     },
 

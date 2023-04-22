@@ -3,6 +3,7 @@ import { Model } from 'mongoose'
 import { InjectModel } from '@nestjs/mongoose'
 import { INews } from './interfaces/news.interface'
 import { NewsDTO } from './dto/news.dto'
+import { Validate } from '../validateBody'
 
 @Injectable()
 export class NewsService {
@@ -27,7 +28,9 @@ export class NewsService {
         try {
             const newNews = new this.newsModel(NewsDTO)
 
-            return await newNews.save()
+            const dbResponse = await newNews.save()
+
+            return dbResponse
         } catch (error) {
             return error
         }
@@ -35,12 +38,24 @@ export class NewsService {
 
     async editNews(newsID: string, NewsDTO: NewsDTO): Promise<INews | any> {
         try {
-            const editNews = await this.newsModel.findByIdAndUpdate(newsID, NewsDTO, {
-                new: true,
-                upsert: true,
+            const validationResult = Validate.isValidRequiredFields({
+                body: NewsDTO,
+                notRequiredArrayFields: ['imgUrl'],
+                path: 'news',
             })
 
-            console.log(editNews)
+            if (!validationResult.isValid) {
+                return validationResult
+            }
+
+            const editNews = await this.newsModel.findByIdAndUpdate(
+                newsID,
+                NewsDTO,
+                {
+                    new: true,
+                    upsert: true,
+                },
+            )
 
             return editNews
         } catch (error) {
