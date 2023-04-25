@@ -1,37 +1,28 @@
-import { ApiProperty } from '@nestjs/swagger/dist/decorators/api-property.decorator'
+import {
+    ApiProperty,
+    ApiPropertyOptional,
+} from '@nestjs/swagger/dist/decorators/api-property.decorator'
 /**
  * Date transfer object - объект, который нужен для того,
  * чтобы знать, какой body придёт с запросом
  */
 export class NewsDTO {
-    @ApiProperty({
-        required: true,
-    })
+    @ApiProperty()
     readonly title: string
 
-    @ApiProperty({
-        required: true,
-    })
+    @ApiProperty()
     readonly description: string
 
-    @ApiProperty({
-        required: true,
-    })
+    @ApiProperty()
     readonly body: string
 
-    @ApiProperty({
-        required: false,
-    })
+    @ApiPropertyOptional()
     readonly createdDay: number
 
-    @ApiProperty({
-        required: false,
-    })
+    @ApiPropertyOptional()
     readonly createdMonth: number
 
-    @ApiProperty({
-        required: false,
-    })
+    @ApiPropertyOptional()
     readonly createdYear: number
 
     readonly imgUrl?: string

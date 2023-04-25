@@ -4,5 +4,6 @@
     "tabWidth": 4,
     "printWidth": 80,
     "useTabs": false,
-    "semi": false
+    "semi": false,
+    "singleline": true
 }

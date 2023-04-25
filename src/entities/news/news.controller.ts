@@ -17,7 +17,7 @@ import { NewsService } from './news.service'
 import { NewsDTO } from './dto/news.dto'
 import { ValidateObjectId } from './shared/validate-id.pipes'
 import {
-    NewsResponse,
+    NewsResponseDTO,
     GetOneNewsResponse,
 } from './swaggerResponse/news.response'
 
@@ -42,7 +42,7 @@ export class NewsController {
     @ApiResponse({
         status: 200,
         description: 'return all news',
-        type: [NewsResponse],
+        type: [NewsResponseDTO],
     })
     @ApiQuery({
         name: 'limit',
@@ -84,7 +84,7 @@ export class NewsController {
     }
 
     @Post()
-    @ApiOkResponse({ type: NewsResponse })
+    @ApiOkResponse({ type: NewsResponseDTO })
     async addNews(@Res() res: Response, @Body() NewsDTO: NewsDTO) {
         const newNews = await this.NewsService.addNews(NewsDTO)
 
@@ -95,7 +95,7 @@ export class NewsController {
 
     @Put(':newsID')
     @ApiBody({ type: NewsDTO })
-    @ApiOkResponse({ type: NewsResponse })
+    @ApiOkResponse({ type: NewsResponseDTO })
     async editNews(
         @Res() res: Response,
         @Param('newsID', new ValidateObjectId()) newsID: string,
