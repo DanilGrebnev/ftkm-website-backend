@@ -10,14 +10,29 @@ import {
     NotFoundException,
     Body,
     Query,
+    Req,
 } from '@nestjs/common'
 import { Request, Response } from 'express'
 import { NewsService } from './news.service'
 import { NewsDTO } from './dto/news.dto'
 import { ValidateObjectId } from './shared/validate-id.pipes'
-import { ApiTags, ApiBody, ApiResponse, ApiQuery } from '@nestjs/swagger'
+import {
+    NewsResponse,
+    GetOneNewsResponse,
+} from './swaggerResponse/news.response'
 
-//Контроллер API новостей news
+import {
+    ApiTags,
+    ApiBody,
+    ApiResponse,
+    ApiCreatedResponse,
+    ApiOkResponse,
+    ApiQuery,
+} from '@nestjs/swagger'
+
+//Imports swagger responses
+
+//Controller API news
 @ApiTags('news')
 @Controller('news')
 export class NewsController {
@@ -27,7 +42,7 @@ export class NewsController {
     @ApiResponse({
         status: 200,
         description: 'return all news',
-        type: [NewsDTO],
+        type: [NewsResponse],
     })
     @ApiQuery({
         name: 'limit',
@@ -53,7 +68,7 @@ export class NewsController {
     @ApiResponse({
         status: 200,
         description: 'return one news',
-        type: NewsDTO,
+        type: GetOneNewsResponse,
     })
     async getOneNews(
         @Res() res: Response,
@@ -69,7 +84,7 @@ export class NewsController {
     }
 
     @Post()
-    @ApiBody({ type: NewsDTO })
+    @ApiOkResponse({ type: NewsResponse })
     async addNews(@Res() res: Response, @Body() NewsDTO: NewsDTO) {
         const newNews = await this.NewsService.addNews(NewsDTO)
 
@@ -80,6 +95,7 @@ export class NewsController {
 
     @Put(':newsID')
     @ApiBody({ type: NewsDTO })
+    @ApiOkResponse({ type: NewsResponse })
     async editNews(
         @Res() res: Response,
         @Param('newsID', new ValidateObjectId()) newsID: string,
@@ -87,11 +103,7 @@ export class NewsController {
     ) {
         const serviceRes = await this.NewsService.editNews(newsID, NewsDTO)
 
-        if (!serviceRes) {
-            return res.status(HttpStatus.BAD_REQUEST).json({ message: 'Ошибка обновления статьи' })
-        }
-
-        return res.status(HttpStatus.OK).json(serviceRes)
+        return res.json(serviceRes)
     }
 
     @Delete(':newsID')

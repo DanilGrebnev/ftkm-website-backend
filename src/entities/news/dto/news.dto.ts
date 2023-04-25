@@ -4,13 +4,19 @@ import { ApiProperty } from '@nestjs/swagger/dist/decorators/api-property.decora
  * чтобы знать, какой body придёт с запросом
  */
 export class NewsDTO {
-    @ApiProperty()
+    @ApiProperty({
+        required: true,
+    })
     readonly title: string
 
-    @ApiProperty()
+    @ApiProperty({
+        required: true,
+    })
     readonly description: string
 
-    @ApiProperty()
+    @ApiProperty({
+        required: true,
+    })
     readonly body: string
 
     @ApiProperty({
