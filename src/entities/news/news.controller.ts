@@ -15,7 +15,7 @@ import { Request, Response } from 'express'
 import { NewsService } from './news.service'
 import { NewsDTO } from './dto/news.dto'
 import { ValidateObjectId } from './shared/validate-id.pipes'
-import { ApiTags, ApiBody, ApiResponse } from '@nestjs/swagger'
+import { ApiTags, ApiBody, ApiResponse, ApiQuery } from '@nestjs/swagger'
 
 //Контроллер API новостей news
 @ApiTags('news')
@@ -29,8 +29,22 @@ export class NewsController {
         description: 'return all news',
         type: [NewsDTO],
     })
-    async getNews(@Res({ passthrough: true }) res: Response) {
-        const news = await this.NewsService.getNews()
+    @ApiQuery({
+        name: 'limit',
+        required: true,
+        type: Number,
+    })
+    @ApiQuery({
+        name: 'skip',
+        required: true,
+        type: Number,
+    })
+    async getNews(
+        @Res() res: Response,
+        @Query('limit') limit: string,
+        @Query('skip') skip: string,
+    ) {
+        const news = await this.NewsService.getNews(limit, skip)
 
         return res.status(HttpStatus.OK).json(news)
     }

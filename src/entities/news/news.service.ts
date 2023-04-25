@@ -11,8 +11,8 @@ export class NewsService {
         private readonly newsModel: Model<INews>,
     ) {}
 
-    async getNews(): Promise<INews[]> {
-        const posts = await this.newsModel.find().exec()
+    async getNews(limit: string, skip: string): Promise<INews[]> {
+        const posts = await this.newsModel.find().limit(+limit).skip(+skip).exec()
 
         return posts
     }
@@ -39,8 +39,6 @@ export class NewsService {
                 new: true,
                 upsert: true,
             })
-
-            console.log(editNews)
 
             return editNews
         } catch (error) {

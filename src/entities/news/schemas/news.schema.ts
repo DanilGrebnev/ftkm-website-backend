@@ -14,11 +14,9 @@ export const NewsSchema = new Schema(
             required: true,
             type: String,
         },
-        author: {
-            required: true,
-            type: String,
-        },
-        
+        createdDay: Number,
+        createdMonth: Number,
+        createdYear: Number,
         imgUrl: String,
     },
 
@@ -27,3 +25,13 @@ export const NewsSchema = new Schema(
         versionKey: false,
     },
 )
+
+NewsSchema.pre('save', function (next) {
+    const now = new Date()
+
+    this.createdDay = now.getUTCDate()
+    this.createdMonth = now.getUTCMonth() + 1
+    this.createdYear = now.getUTCFullYear()
+
+    next()
+})

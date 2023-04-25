@@ -6,14 +6,27 @@ import { ApiProperty } from '@nestjs/swagger/dist/decorators/api-property.decora
 export class NewsDTO {
     @ApiProperty()
     readonly title: string
+
     @ApiProperty()
     readonly description: string
+
     @ApiProperty()
     readonly body: string
-    @ApiProperty()
-    readonly author: string
+
     @ApiProperty({
         required: false,
     })
+    readonly createdDay: number
+
+    @ApiProperty({
+        required: false,
+    })
+    readonly createdMonth: number
+
+    @ApiProperty({
+        required: false,
+    })
+    readonly createdYear: number
+
     readonly imgUrl?: string
 }
