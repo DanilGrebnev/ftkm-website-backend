@@ -16,6 +16,8 @@ import { Request, Response } from 'express'
 import { NewsService } from './news.service'
 import { NewsDTO } from './dto/news.dto'
 import { ValidateObjectId } from './shared/validate-id.pipes'
+
+//Imports swagger responses
 import {
     NewsResponseDTO,
     GetOneNewsResponse,
@@ -29,8 +31,6 @@ import {
     ApiOkResponse,
     ApiQuery,
 } from '@nestjs/swagger'
-
-//Imports swagger responses
 
 //Controller API news
 @ApiTags('news')
@@ -64,9 +64,15 @@ export class NewsController {
         @Query('skip') skip: string,
     ) {
         try {
-            const news = await this.NewsService.getNews(limit, skip)
-
-            return res.status(HttpStatus.OK).json(news)
+            const { news, countDocuments } = await this.NewsService.getNews(
+                limit,
+                skip,
+            )
+            // header('X-Total-Count', countDocuments.toString())
+            return res
+                .status(HttpStatus.OK)
+                .header('X-Total-Count', countDocuments.toString())
+                .json(news)
         } catch (err) {
             res.status(HttpStatus.BAD_REQUEST).json({
                 message: 'Ошибка получения новостей',

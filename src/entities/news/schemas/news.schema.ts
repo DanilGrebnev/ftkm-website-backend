@@ -1,33 +1,33 @@
-import { Schema } from 'mongoose'
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
+import { Document } from 'mongoose'
 
-export const NewsSchema = new Schema(
-    {
-        title: {
-            required: true,
-            type: String,
-        },
+export type NewsDocument = News & Document
 
-        description: {
-            required: true,
-            type: String,
-        },
-        body: {
-            required: true,
-            type: String,
-        },
+@Schema()
+export class News {
+    @Prop({ required: true })
+    title: string
 
-        createdDay: Number,
-        createdMonth: Number,
-        createdYear: Number,
+    @Prop({ required: true })
+    description: string
 
-        imgUrl: String,
-    },
+    @Prop({ required: true })
+    body: string
 
-    {
-        timestamps: true,
-        versionKey: false,
-    },
-)
+    @Prop()
+    imgUrl?: string
+
+    @Prop()
+    createdDay?: number
+
+    @Prop()
+    createdMonth?: number
+
+    @Prop()
+    createdYear?: number
+}
+
+export const NewsSchema = SchemaFactory.createForClass(News)
 
 NewsSchema.pre('save', function (next) {
     const now = new Date()
