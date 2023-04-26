@@ -3,12 +3,7 @@ import { AppController } from './app.controller'
 import { AppService } from './app.service'
 import { MongooseModule } from '@nestjs/mongoose'
 import { NewsModule } from './entities/news/news.module'
-
-//!Не настроил middleware 
-// import { CountDocumentsMiddleware } from './entities/news/middleware/CountDocumentsMiddleware'
-// import { NewsController } from './entities/news/news.controller'
-// import { NewsSchema } from './entities/news/schemas/news.schema'
-// import { model } from 'mongoose'
+import { GetDocumentCountMiddleware } from './entities/news/middleware/CountDocumentsMiddleware'
 
 @Module({
     imports: [
@@ -20,4 +15,8 @@ import { NewsModule } from './entities/news/news.module'
     controllers: [AppController],
     providers: [AppService],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+    configure(consumer: MiddlewareConsumer) {
+        consumer.apply(GetDocumentCountMiddleware).forRoutes('news')
+    }
+}

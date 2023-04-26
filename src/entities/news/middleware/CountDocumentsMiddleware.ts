@@ -1,14 +1,17 @@
-//!Мидлвара не работает.
-import { NewsSchema } from '../schemas/news.schema'
+import { InjectModel } from '@nestjs/mongoose'
+import { NestMiddleware } from '@nestjs/common'
 import { Request, Response, NextFunction } from 'express'
-import { Model, Document } from 'mongoose'
+import { NewsSchema } from '../schemas/news.schema'
+import { Model } from 'mongoose'
+import { INews } from '../interfaces/news.interface'
 
-type NewsDocument = typeof NewsSchema & Document
+export class GetDocumentCountMiddleware implements NestMiddleware {
+    constructor(
+    ) {}
 
-export const CountDocumentsMiddleware =
-    (newsModel: Model<NewsDocument>) =>
-    async (req: Request, res: Response, next: NextFunction) => {
-        const count = await newsModel.countDocuments()
-        res.setHeader('X-Collection-Size', count)
+    async use(req: Request, res: Response, next: NextFunction) {
+
+        console.log('hello')
         next()
     }
+}

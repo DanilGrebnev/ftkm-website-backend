@@ -44,6 +44,10 @@ export class NewsController {
         description: 'return all news',
         type: [NewsResponseDTO],
     })
+    @ApiResponse({
+        status: HttpStatus.BAD_REQUEST,
+        description: 'error get news',
+    })
     @ApiQuery({
         name: 'limit',
         required: true,
@@ -59,9 +63,15 @@ export class NewsController {
         @Query('limit') limit: string,
         @Query('skip') skip: string,
     ) {
-        const news = await this.NewsService.getNews(limit, skip)
+        try {
+            const news = await this.NewsService.getNews(limit, skip)
 
-        return res.status(HttpStatus.OK).json(news)
+            return res.status(HttpStatus.OK).json(news)
+        } catch (err) {
+            res.status(HttpStatus.BAD_REQUEST).json({
+                message: 'Ошибка получения новостей',
+            })
+        }
     }
 
     @Get(':newsID')

@@ -3,8 +3,10 @@ import { AppModule } from './app.module'
 import { SwaggerConfig } from './swaggerConfig'
 
 async function bootstrap() {
-    const app = await NestFactory.create(AppModule)
+    const app = await NestFactory.create(AppModule, { cors: true })
     app.enableCors()
+
+    const httpAdapter = app.getHttpAdapter()
 
     //Swagger документация
     SwaggerConfig.setup(app)
