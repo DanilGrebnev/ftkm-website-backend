@@ -80,6 +80,13 @@ export class NewsController {
         }
     }
 
+    @Get('lastDoc')
+    async getLastNews(@Res() res: Response, @Query('limit') limit: number) {
+        const news = await this.NewsService.getLastNews(limit)
+
+        return res.json(news).status(HttpStatus.OK)
+    }
+
     @Get(':newsID')
     @ApiResponse({
         status: 200,

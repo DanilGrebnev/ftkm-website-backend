@@ -17,6 +17,7 @@ export class NewsService {
     ): Promise<{ news: News[]; countDocuments: number }> {
         const news = await this.newsModel
             .find()
+            .sort({ _id: -1 })
             .limit(+limit)
             .skip(+skip)
             .exec()
@@ -27,6 +28,18 @@ export class NewsService {
             .exec()
 
         return { news, countDocuments }
+    }
+
+    async getLastNews(lastDocCount: number): Promise<News[]> {
+        const countDocument = await this.newsModel.countDocuments()
+
+        const news = await this.newsModel
+            .find()
+            .sort({ _id: -1 })
+            .limit(+lastDocCount)
+            .exec()
+
+        return news
     }
 
     async getOneNews(newsID: string): Promise<News> {

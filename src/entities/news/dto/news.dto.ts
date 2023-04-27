@@ -25,5 +25,6 @@ export class NewsDTO {
     @ApiPropertyOptional()
     readonly createdYear: number
 
+    @ApiPropertyOptional()
     readonly imgUrl?: string
 }
