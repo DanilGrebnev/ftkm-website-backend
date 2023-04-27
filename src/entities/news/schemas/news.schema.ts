@@ -25,6 +25,9 @@ export class News {
 
     @Prop()
     createdYear?: number
+
+    @Prop()
+    createdDate?: string
 }
 
 export const NewsSchema = SchemaFactory.createForClass(News)
@@ -35,6 +38,9 @@ NewsSchema.pre('save', function (next) {
     this.createdDay = now.getUTCDate()
     this.createdMonth = now.getUTCMonth() + 1
     this.createdYear = now.getUTCFullYear()
+    this.createdDate = `${this.createdDay}.${
+        this.createdMonth < 10 ? '0' + this.createdMonth : this.createdMonth
+    }.${this.createdYear}`
 
     next()
 })
