@@ -11,23 +11,33 @@ import {
     Body,
     Query,
     Req,
+    UseInterceptors,
+    UploadedFile,
+    UploadedFiles,
 } from '@nestjs/common'
 import { Request, Response } from 'express'
+
+import { FileService } from '../file/file.service'
+
 import { NewsService } from './news.service'
+
 import { NewsDTO } from './dto/news.dto'
+
 import { ValidateObjectId } from './shared/validate-id.pipes'
+
+import { FileType } from '../file/file.service'
 
 //Imports swagger responses
 import {
     NewsResponseDTO,
     GetOneNewsResponse,
 } from './swaggerResponse/news.response'
+import { FileInterceptor } from '@nestjs/platform-express'
 
 import {
     ApiTags,
     ApiBody,
     ApiResponse,
-    ApiCreatedResponse,
     ApiOkResponse,
     ApiQuery,
 } from '@nestjs/swagger'
@@ -36,7 +46,10 @@ import {
 @ApiTags('news')
 @Controller('news')
 export class NewsController {
-    constructor(private NewsService: NewsService) {}
+    constructor(
+        private NewsService: NewsService,
+        private FileService: FileService,
+    ) {}
 
     @Get()
     @ApiResponse({
@@ -108,8 +121,15 @@ export class NewsController {
 
     @Post()
     @ApiOkResponse({ type: NewsResponseDTO })
-    async addNews(@Res() res: Response, @Body() NewsDTO: NewsDTO) {
-        const newNews = await this.NewsService.addNews(NewsDTO)
+    @UseInterceptors(FileInterceptor('file'))
+    async addNews(
+        @Res() res: Response,
+        @Body() NewsDTO: NewsDTO,
+        @UploadedFile() file: Express.Multer.File,
+    ) {
+        const imagePath = this.FileService.createFile(FileType.IMAGE, file)
+
+        const newNews = await this.NewsService.addNews(NewsDTO, imagePath)
 
         return res.status(HttpStatus.OK).json({
             news: newNews,

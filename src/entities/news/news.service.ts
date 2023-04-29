@@ -3,6 +3,8 @@ import { Model } from 'mongoose'
 import { InjectModel } from '@nestjs/mongoose'
 import { NewsDTO } from './dto/news.dto'
 import { News } from './schemas/news.schema'
+import { FileService } from '../file/file.service'
+
 
 @Injectable()
 export class NewsService {
@@ -48,9 +50,9 @@ export class NewsService {
         return oneNews
     }
 
-    async addNews(NewsDTO: NewsDTO): Promise<News> {
+    async addNews(NewsDTO: NewsDTO, fileName: string): Promise<any> {
         try {
-            const newNews = new this.newsModel(NewsDTO)
+            const newNews = new this.newsModel({ ...NewsDTO, imgUrl: fileName })
 
             return await newNews.save()
         } catch (error) {
