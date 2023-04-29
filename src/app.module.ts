@@ -4,9 +4,14 @@ import { AppService } from './app.service'
 import { MongooseModule } from '@nestjs/mongoose'
 import { NewsModule } from './entities/news/news.module'
 import { GetDocumentCountMiddleware } from './entities/news/middleware/CountDocumentsMiddleware'
+import { ServeStaticModule } from '@nestjs/serve-static'
+import * as path from 'path'
 
 @Module({
     imports: [
+        ServeStaticModule.forRoot({
+            rootPath: path.join(__dirname, 'static'),
+        }),
         MongooseModule.forRoot('mongodb://127.0.0.1/ftkm', {
             useNewUrlParser: true,
         }),
