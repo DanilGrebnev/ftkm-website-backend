@@ -135,9 +135,7 @@ export class NewsController {
         @Body() NewsDTO: NewsDTO,
         @UploadedFile() img: Express.Multer.File,
     ) {
-        const imgName = img
-            ? this.FileService.createFile(FileType.IMAGE, img)
-            : ''
+        const imgName = this.FileService.createFile(FileType.IMAGE, img) || ''
 
         const newNews = await this.NewsService.addNews(NewsDTO, imgName)
 

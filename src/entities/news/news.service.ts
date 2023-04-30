@@ -54,11 +54,12 @@ export class NewsService {
             const newNews = new this.newsModel({
                 ...NewsDTO,
                 imgUrl: imgName,
-                files: [],
             })
 
             return await newNews.save()
         } catch (error) {
+            console.log(error)
+
             return error
         }
     }

@@ -13,6 +13,8 @@ export enum FileType {
 export class FileService {
     createFile(type: FileType, file: Express.Multer.File) {
         try {
+            if (!file) return
+
             const fileExtends = '.' + file.mimetype.split('/').pop()
 
             const fileName = uuid() + fileExtends
