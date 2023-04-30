@@ -5,7 +5,6 @@ import { NewsDTO } from './dto/news.dto'
 import { News } from './schemas/news.schema'
 import { FileService } from '../file/file.service'
 
-
 @Injectable()
 export class NewsService {
     constructor(
@@ -50,9 +49,13 @@ export class NewsService {
         return oneNews
     }
 
-    async addNews(NewsDTO: NewsDTO, fileName: string): Promise<any> {
+    async addNews(NewsDTO: NewsDTO, imgName: string): Promise<News> {
         try {
-            const newNews = new this.newsModel({ ...NewsDTO, imgUrl: fileName })
+            const newNews = new this.newsModel({
+                ...NewsDTO,
+                imgUrl: imgName,
+                files: [],
+            })
 
             return await newNews.save()
         } catch (error) {

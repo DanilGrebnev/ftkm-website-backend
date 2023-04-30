@@ -11,9 +11,6 @@ export class NewsDTO {
     readonly title: string
 
     @ApiProperty()
-    readonly description: string
-
-    @ApiProperty()
     readonly body: string
 
     @ApiPropertyOptional()

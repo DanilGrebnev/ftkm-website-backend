@@ -9,9 +9,6 @@ export class News {
     title: string
 
     @Prop({ required: true })
-    description: string
-
-    @Prop({ required: true })
     body: string
 
     @Prop()
@@ -36,11 +33,18 @@ NewsSchema.pre('save', function (next) {
     const now = new Date()
 
     this.createdDay = now.getUTCDate()
+
     this.createdMonth = now.getUTCMonth() + 1
+
     this.createdYear = now.getUTCFullYear()
-    this.createdDate = `${this.createdDay}.${
-        this.createdMonth < 10 ? '0' + this.createdMonth : this.createdMonth
-    }.${this.createdYear}`
+
+    this.createdDate = `${addZeroBeforeDate(
+        this.createdDay,
+    )}.${addZeroBeforeDate(this.createdMonth)}.${this.createdYear}`
 
     next()
 })
+
+function addZeroBeforeDate(date: number) {
+    return date < 10 ? '0' + date : date
+}

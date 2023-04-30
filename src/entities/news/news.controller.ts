@@ -19,6 +19,8 @@ import { Request, Response } from 'express'
 
 import { FileService } from '../file/file.service'
 
+import { FileUploadDto } from '../file/dto/FileUpload.dto'
+
 import { NewsService } from './news.service'
 
 import { NewsDTO } from './dto/news.dto'
@@ -40,6 +42,7 @@ import {
     ApiResponse,
     ApiOkResponse,
     ApiQuery,
+    ApiConsumes,
 } from '@nestjs/swagger'
 
 //Controller API news
@@ -121,15 +124,22 @@ export class NewsController {
 
     @Post()
     @ApiOkResponse({ type: NewsResponseDTO })
-    @UseInterceptors(FileInterceptor('file'))
+    @ApiConsumes('multipart/form-data')
+    @ApiBody({
+        description: 'Avatar image',
+        type: FileUploadDto,
+    })
+    @UseInterceptors(FileInterceptor('img'))
     async addNews(
         @Res() res: Response,
         @Body() NewsDTO: NewsDTO,
-        @UploadedFile() file: Express.Multer.File,
+        @UploadedFile() img: Express.Multer.File,
     ) {
-        const imagePath = this.FileService.createFile(FileType.IMAGE, file)
+        const imgName = img
+            ? this.FileService.createFile(FileType.IMAGE, img)
+            : ''
 
-        const newNews = await this.NewsService.addNews(NewsDTO, imagePath)
+        const newNews = await this.NewsService.addNews(NewsDTO, imgName)
 
         return res.status(HttpStatus.OK).json({
             news: newNews,
