@@ -1,4 +1,9 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
+import {
+    HttpException,
+    HttpStatus,
+    Injectable,
+    NotFoundException,
+} from '@nestjs/common'
 import { Express } from 'express'
 import * as path from 'path'
 import * as fs from 'fs'
@@ -35,6 +40,7 @@ export class FileService {
             return type + '/' + fileName
         } catch (err) {
             console.log(err)
+
             throw new HttpException(
                 err.message,
                 HttpStatus.INTERNAL_SERVER_ERROR,
@@ -42,5 +48,39 @@ export class FileService {
         }
     }
 
-    removeFile(fileName: string) {}
+    removeFile(fileName: string) {
+        try {
+            const filePath = path.resolve(
+                __dirname,
+                '..',
+                '..',
+                `static/${fileName}`,
+            )
+
+            fs.unlinkSync(filePath)
+
+            return { message: 'Файл удалён', ok: true }
+        } catch (err) {
+            console.log(err)
+
+            return { message: 'Ошибка удаления файла', ok: false }
+        }
+    }
+
+    checkFile(filName: string) {
+        try {
+            const filePath = path.resolve(
+                __dirname,
+                '..',
+                '..',
+                `static/${filName}`,
+            )
+
+            fs.accessSync(filePath)
+
+            return true
+        } catch (err) {
+            return true
+        }
+    }
 }

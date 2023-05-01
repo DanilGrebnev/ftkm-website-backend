@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
-import { Document } from 'mongoose'
+import mongoose, { Document } from 'mongoose'
 
 export type NewsDocument = News & Document
 
@@ -11,20 +11,20 @@ export class News {
     @Prop({ required: true })
     body: string
 
-    @Prop()
-    imgUrl?: string
-
-    @Prop()
+    @Prop({ required: false })
     createdDay?: number
+
+    @Prop({ required: false })
+    createdYear?: number
 
     @Prop()
     createdMonth?: number
 
     @Prop()
-    createdYear?: number
-
-    @Prop()
     createdDate?: string
+
+    @Prop({ required: false })
+    imgName?: string
 }
 
 export const NewsSchema = SchemaFactory.createForClass(News)

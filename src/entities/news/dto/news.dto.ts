@@ -14,17 +14,17 @@ export class NewsDTO {
     readonly body: string
 
     @ApiPropertyOptional()
-    readonly createdDay: number
+    readonly createdDay?: number
 
     @ApiPropertyOptional()
-    readonly createdMonth: number
+    readonly createdMonth?: number
 
     @ApiPropertyOptional()
-    readonly createdYear: number
+    readonly createdYear?: number
 
     @ApiPropertyOptional()
-    readonly createdDate: string
+    readonly createdDate?: string
 
     @ApiPropertyOptional()
-    readonly imgUrl?: string
+    readonly imgName?: string
 }

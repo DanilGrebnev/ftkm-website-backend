@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { BadRequestException, Injectable } from '@nestjs/common'
 import { Model } from 'mongoose'
 import { InjectModel } from '@nestjs/mongoose'
 import { NewsDTO } from './dto/news.dto'
@@ -49,18 +49,14 @@ export class NewsService {
         return oneNews
     }
 
-    async addNews(NewsDTO: NewsDTO, imgName: string): Promise<News> {
+    async addNews(NewsDTO: NewsDTO): Promise<News | { error: any }> {
         try {
-            const newNews = new this.newsModel({
-                ...NewsDTO,
-                imgUrl: imgName,
-            })
+            const newNews = new this.newsModel(NewsDTO)
 
             return await newNews.save()
         } catch (error) {
             console.log(error)
-
-            return error
+            throw new BadRequestException('Ошибка публикации статьи')
         }
     }
 

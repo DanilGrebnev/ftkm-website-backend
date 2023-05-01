@@ -5,12 +5,12 @@ import {
 import { NewsDTO } from '../dto/news.dto'
 
 export class NewsResponseDTO extends NewsDTO {
-    @ApiProperty()
+    @ApiPropertyOptional()
     _id: string
-    @ApiProperty()
+    @ApiPropertyOptional()
     updatedAt: string
-    @ApiProperty()
+    @ApiPropertyOptional()
     createdAt: string
 }
 
-export class GetOneNewsResponse extends NewsResponseDTO {}
+export class GetOneNewsDTO extends NewsResponseDTO {}
