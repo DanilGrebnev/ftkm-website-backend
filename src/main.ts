@@ -3,6 +3,8 @@ import { AppModule } from './app.module'
 import { SwaggerConfig } from './swaggerConfig'
 import { CorsOptions } from '@nestjs/common/interfaces/external/cors-options.interface'
 
+const PORT = process.env.PORT || 3001
+
 async function bootstrap() {
     const app = await NestFactory.create(AppModule, { cors: true })
 
@@ -17,7 +19,9 @@ async function bootstrap() {
     //Swagger документация
     SwaggerConfig.setup(app)
 
-    await app.listen(3001)
+    await app.listen(PORT, () => {
+        console.log('Server has been started on port ' + PORT)
+    })
 }
 
 bootstrap()

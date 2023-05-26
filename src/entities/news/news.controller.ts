@@ -76,11 +76,13 @@ export class NewsController {
         @Res() res: Response,
         @Query('limit') limit: string,
         @Query('skip') skip: string,
+        @Query('filterStr') filterStr: string,
     ) {
         try {
             const { news, countDocuments } = await this.NewsService.getNews(
                 limit,
                 skip,
+                filterStr,
             )
             // header('X-Total-Count', countDocuments.toString())
             return res
@@ -99,6 +101,28 @@ export class NewsController {
         const news = await this.NewsService.getLastNews(limit)
 
         return res.json(news).status(HttpStatus.OK)
+    }
+
+    @Get('filter')
+    async getFilteredNews(
+        @Res() res: Response,
+        @Query('limit') limit: string,
+        @Query('skip') skip: string,
+        @Query('title') title: string,
+    ) {
+        try {
+            const { news, countDocuments } =
+                await this.NewsService.getFilteredNews(limit, skip, title)
+            return res
+                .status(HttpStatus.OK)
+                .header('X-Total-Count', countDocuments.toString())
+                .json(news)
+        } catch (err) {
+            console.log(err)
+            res.status(HttpStatus.BAD_REQUEST).json({
+                message: 'Ошибка получения новостей',
+            })
+        }
     }
 
     @Get(':newsID')
