@@ -67,20 +67,20 @@ export class FileService {
         }
     }
 
-    checkFile(filName: string) {
+    checkFile(fileName: string) {
         try {
             const filePath = path.resolve(
                 __dirname,
                 '..',
                 '..',
-                `static/${filName}`,
+                `static/${fileName}`,
             )
 
             fs.accessSync(filePath)
 
             return true
         } catch (err) {
-            return true
+            return false
         }
     }
 }

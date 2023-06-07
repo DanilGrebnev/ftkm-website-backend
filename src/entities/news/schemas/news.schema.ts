@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import mongoose, { Document } from 'mongoose'
-
+import { addZeroBeforeDate } from 'src/utils/addZeroBeforeDate'
 export type NewsDocument = News & Document
 
 @Schema()
@@ -44,7 +44,3 @@ NewsSchema.pre('save', function (next) {
 
     next()
 })
-
-function addZeroBeforeDate(date: number) {
-    return date < 10 ? '0' + date : date
-}

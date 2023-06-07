@@ -24,7 +24,7 @@ import { FileImageDto } from '../file/dto/FIleImage.dto'
 
 import { NewsService } from './news.service'
 
-import { NewsDTO } from './dto/news.dto'
+import { NewsDTO } from './news.dto'
 
 import { ValidateObjectId } from './shared/validate-id.pipes'
 
@@ -144,9 +144,9 @@ export class NewsController {
     @Post()
     @ApiOkResponse({ type: NewsResponseDTO })
     async addNews(@Res() res: Response, @Body() NewsDTO: NewsDTO) {
-        const news = await this.NewsService.addNews(NewsDTO)
+        const response = await this.NewsService.addNews(NewsDTO)
 
-        return res.status(HttpStatus.OK).json(news)
+        return res.status(HttpStatus.OK).json(response)
     }
 
     @Post('uploadImage')

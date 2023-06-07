@@ -1,7 +1,7 @@
-import { BadRequestException, Injectable } from '@nestjs/common'
+import { BadRequestException, HttpException, Injectable } from '@nestjs/common'
 import { Model } from 'mongoose'
 import { InjectModel } from '@nestjs/mongoose'
-import { NewsDTO } from './dto/news.dto'
+import { NewsDTO } from './news.dto'
 import { News } from './schemas/news.schema'
 import { FileService } from '../file/file.service'
 import { createSearchQuery } from 'src/utils/createSearchQuery'
@@ -98,10 +98,11 @@ export class NewsService {
         try {
             const newNews = new this.newsModel(NewsDTO)
 
-            return await newNews.save()
-        } catch (error) {
-            console.log(error)
-            throw new BadRequestException('Ошибка публикации статьи')
+            const response = await newNews.save()
+
+            return response
+        } catch (err) {
+            throw new HttpException('Ошибка отправки', 401)
         }
     }
 

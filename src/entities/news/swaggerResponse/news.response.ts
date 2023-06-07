@@ -2,7 +2,7 @@ import {
     ApiProperty,
     ApiPropertyOptional,
 } from '@nestjs/swagger/dist/decorators/api-property.decorator'
-import { NewsDTO } from '../dto/news.dto'
+import { NewsDTO } from '../news.dto'
 
 export class NewsResponseDTO extends NewsDTO {
     @ApiPropertyOptional()
