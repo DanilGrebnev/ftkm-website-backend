@@ -8,14 +8,12 @@ import { ServeStaticModule } from '@nestjs/serve-static'
 import * as path from 'path'
 import { ConfigModule } from '@nestjs/config'
 
-const DB_URL = process.env.DB_URL || 'mongodb://127.0.0.1/'
-
 @Module({
     imports: [
         ServeStaticModule.forRoot({
             rootPath: path.join(__dirname, 'static'),
         }),
-        MongooseModule.forRoot(DB_URL + 'ftkm', {
+        MongooseModule.forRoot('mongodb://127.0.0.1/' + 'ftkm', {
             useNewUrlParser: true,
         }),
         ConfigModule.forRoot(),
