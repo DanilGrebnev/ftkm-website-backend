@@ -12,7 +12,7 @@ async function bootstrap() {
     const options: CorsOptions = {
         origin: '*',
         methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-        exposedHeaders: ['X-Total-Count'],
+        exposedHeaders: ['x-total-count'],
     }
 
     app.enableCors(options)

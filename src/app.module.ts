@@ -1,12 +1,11 @@
 import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common'
-import { AppController } from './app.controller'
-import { AppService } from './app.service'
 import { MongooseModule } from '@nestjs/mongoose'
 import { NewsModule } from './entities/news/news.module'
 import { GetDocumentCountMiddleware } from './entities/news/middleware/CountDocumentsMiddleware'
 import { ServeStaticModule } from '@nestjs/serve-static'
-import * as path from 'path'
 import { ConfigModule } from '@nestjs/config'
+import { UserModule } from './entities/user/user.module'
+import * as path from 'path'
 
 @Module({
     imports: [
@@ -18,9 +17,10 @@ import { ConfigModule } from '@nestjs/config'
         }),
         ConfigModule.forRoot(),
         NewsModule,
+        UserModule,
     ],
-    controllers: [AppController],
-    providers: [AppService],
+    controllers: [],
+    providers: [],
 })
 export class AppModule implements NestModule {
     configure(consumer: MiddlewareConsumer) {
