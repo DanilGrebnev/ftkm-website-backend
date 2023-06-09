@@ -1,9 +1,17 @@
-import { Injectable, NotFoundException } from '@nestjs/common'
+import {
+    Injectable,
+    NotFoundException,
+    HttpException,
+    BadRequestException,
+    NotAcceptableException,
+} from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
 import { User } from './schemas/user.schema'
 import { UserDTO } from './user.dto'
 import { userResponse } from './user.response'
+
+import { generateAccessToken } from '../../utils/genereteAccessToken'
 
 @Injectable()
 export class UserService {
@@ -12,17 +20,24 @@ export class UserService {
         private readonly userModel: Model<User>,
     ) {}
 
-    async checkUser(userDto: UserDTO) {
+    async login(userDto: UserDTO): Promise<any> {
         const filter = { login: userDto?.login }
 
         try {
-            const res = await this.userModel.findOne(filter).exec()
+            //Ищем пользователя по логину
+            const user = await this.userModel.findOne(filter).exec()
 
-            if (!res) throw new Error(userResponse.not_found)
+            if (!user) throw new NotFoundException(userResponse.not_found)
 
-            return res
+            if (userDto.password !== user.password) {
+                throw new NotAcceptableException(userResponse.not_access)
+            }
+
+            const token = await generateAccessToken(userDto)
+
+            return token
         } catch (err) {
-            throw new NotFoundException(err.message)
+            throw new Error(err.message)
         }
     }
 

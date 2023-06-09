@@ -1,5 +1,5 @@
 export const configuration = {
-    secret_jwt: process.env.SECRET,
+    secret_jwt: 'VeryHardSecret',
     db_url: process.env.DB_URL,
-    db_port: process.env.PORT,
+    db_port: 8089,
 }

@@ -30,6 +30,8 @@ import { ValidateObjectId } from './shared/validate-id.pipes'
 
 import { FileType } from '../file/file.service'
 
+import { ApiTokenCheckMiddleware } from '../../middleware/ApiTokenCheckMiddleware'
+
 //Imports swagger responses
 import { NewsResponseDTO, GetOneNewsDTO } from './swaggerResponse/news.response'
 import { FileInterceptor } from '@nestjs/platform-express'

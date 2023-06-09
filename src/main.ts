@@ -4,9 +4,9 @@ import { SwaggerConfig } from './swaggerConfig'
 import { CorsOptions } from '@nestjs/common/interfaces/external/cors-options.interface'
 import { configuration } from './configuration'
 
-const { db_port } = configuration
-
 async function bootstrap() {
+    const { db_port } = configuration
+
     const app = await NestFactory.create(AppModule, { cors: true })
 
     const options: CorsOptions = {
@@ -20,7 +20,7 @@ async function bootstrap() {
     //Swagger документация
     SwaggerConfig.setup(app)
 
-    await app.listen(db_port, () => {
+    await app.listen(8089, () => {
         console.log('Server started on port ' + db_port)
     })
 }

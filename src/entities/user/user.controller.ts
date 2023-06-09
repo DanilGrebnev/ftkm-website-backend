@@ -8,17 +8,11 @@ import { ApiBody, ApiTags } from '@nestjs/swagger'
 export class UserController {
     constructor(private userService: UserService) {}
 
-    @Post('check')
     @ApiBody({ type: UserDTO })
-    async checkUser(@Body() userDto: UserDTO) {
-        const res = await this.userService.checkUser(userDto)
+    @Post('login')
+    async login(@Body() userDto: UserDTO) {
+        const res = await this.userService.login(userDto)
 
-        return { res }
-    }
-
-    @Post()
-    addUser(@Body() userDto: UserDTO) {
-        const res = this.userService.createUser(userDto)
-        return res
+        return { token: res }
     }
 }
