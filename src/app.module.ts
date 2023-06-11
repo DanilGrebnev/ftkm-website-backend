@@ -12,6 +12,7 @@ import { ServeStaticModule } from '@nestjs/serve-static'
 import { UserModule } from './entities/user/user.module'
 import * as path from 'path'
 import { ApiTokenCheckMiddleware } from './middleware/ApiTokenCheckMiddleware'
+import { NewsController } from './entities/news/news.controller'
 
 @Module({
     imports: [
@@ -34,19 +35,34 @@ import { ApiTokenCheckMiddleware } from './middleware/ApiTokenCheckMiddleware'
 export class AppModule implements NestModule {
     //Установка промежуточного обработчика
     configure(consumer: MiddlewareConsumer) {
-        consumer.apply(ApiTokenCheckMiddleware).forRoutes(
-            {
-                path: 'news',
-                method: RequestMethod.POST,
-            },
-            {
-                path: 'news',
-                method: RequestMethod.PUT,
-            },
-            {
-                path: 'news',
-                method: RequestMethod.DELETE,
-            },
-        )
+        consumer
+            .apply(ApiTokenCheckMiddleware)
+            .exclude(
+                {
+                    path: 'news',
+                    method: RequestMethod.GET,
+                },
+                {
+                    path: 'news/:newsID',
+                    method: RequestMethod.GET,
+                },
+                'cats/(.*)',
+            )
+            .forRoutes(NewsController)
     }
 }
+
+// .forRoutes(
+//     {
+//         path: 'news',
+//         method: RequestMethod.POST,
+//     },
+//     {
+//         path: 'news',
+//         method: RequestMethod.PUT,
+//     },
+//     {
+//         path: 'news',
+//         method: RequestMethod.DELETE,
+//     },
+// )
