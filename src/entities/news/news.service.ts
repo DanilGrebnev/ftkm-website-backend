@@ -16,27 +16,7 @@ export class NewsService {
     async getNews(
         limit: string,
         skip: string,
-        filterStr: string,
     ): Promise<{ news: News[]; countDocuments: number }> {
-        if (filterStr) {
-            // console.log('Поиск по фильтру')
-            const filter = { title: { $regex: new RegExp(filterStr, 'i') } }
-
-            const news = await this.newsModel
-                .find(filter)
-                .sort({ _id: -1 })
-                .limit(+limit)
-                .skip(+skip)
-                .exec()
-
-            const countDocuments = await this.newsModel
-                .find(filter)
-                .countDocuments()
-                .exec()
-
-            return { news, countDocuments }
-        }
-
         // console.log('Поиск без фильтра')
 
         const news = await this.newsModel

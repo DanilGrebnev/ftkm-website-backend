@@ -8,7 +8,9 @@ import { Request, Response, NextFunction } from 'express'
 import { userResponse } from '../entities/user/user.response'
 import { JwtService } from '@nestjs/jwt'
 import { returnTokenFromHeaders } from 'src/utils/returnTokenFromHeaders'
-// Промежуточный обработчик для
+
+// Промежуточный обработчик для проверки доступа
+// к роутам: POST, PUT, DELETE
 @Injectable()
 export class ApiTokenCheckMiddleware implements NestMiddleware {
     use(req: Request, res: Response, next: NextFunction) {
@@ -16,11 +18,11 @@ export class ApiTokenCheckMiddleware implements NestMiddleware {
 
         const token = returnTokenFromHeaders(req)
 
-        console.log(`
-        ===============================================
-        worked middleware ApiTokenCheck
-        ===============================================
-        `)
+        // console.log(`
+        // ===============================================
+        // worked middleware ApiTokenCheck
+        // ===============================================
+        // `)
 
         if (!token) {
             throw new NotAcceptableException(userResponse.not_access)

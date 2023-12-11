@@ -78,13 +78,11 @@ export class NewsController {
         @Res() res: Response,
         @Query('limit') limit: string,
         @Query('skip') skip: string,
-        @Query('filterStr') filterStr: string,
     ) {
         try {
             const { news, countDocuments } = await this.NewsService.getNews(
                 limit,
                 skip,
-                filterStr,
             )
             // header('X-Total-Count', countDocuments.toString())
             return res

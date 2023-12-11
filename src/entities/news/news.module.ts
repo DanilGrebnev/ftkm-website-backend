@@ -9,7 +9,6 @@ import { NewsController } from './news.controller'
 import { NewsSchema } from './schemas/news.schema'
 import { MongooseModule } from '@nestjs/mongoose'
 import { FileService } from '../file/file.service'
-import { ApiTokenCheckMiddleware } from 'src/middleware/ApiTokenCheckMiddleware'
 
 @Module({
     //Регистрируем схему
