@@ -13,6 +13,7 @@ import { UserModule } from './entities/user/user.module'
 import * as path from 'path'
 import { ApiTokenCheckMiddleware } from './middleware/ApiTokenCheckMiddleware'
 import { NewsController } from './entities/news/news.controller'
+import { FilesModule } from './entities/files/files.module'
 
 @Module({
     imports: [
@@ -27,6 +28,7 @@ import { NewsController } from './entities/news/news.controller'
         }),
         NewsModule,
         UserModule,
+        FilesModule,
     ],
 
     controllers: [],

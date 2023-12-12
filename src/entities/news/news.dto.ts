@@ -23,5 +23,9 @@ export class NewsDTO {
     readonly createdDate?: string
 
     @ApiPropertyOptional()
-    readonly imgName?: string
+    readonly files?: {
+        newsId: string
+        href: string
+        data: string
+    }[]
 }

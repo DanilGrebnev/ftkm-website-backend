@@ -1,7 +1,6 @@
 import { UserDTO } from 'src/entities/user/user.dto'
 import { configuration } from 'src/configuration'
 import { JwtService } from '@nestjs/jwt'
-import { Injectable } from '@nestjs/common'
 
 export const generateAccessToken = async (
     userDto: UserDTO,

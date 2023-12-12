@@ -13,14 +13,8 @@ import {
     Req,
     UseInterceptors,
     UploadedFile,
-    UploadedFiles,
-    HttpException,
 } from '@nestjs/common'
-import { Request, Response } from 'express'
-
-import { FileService } from '../file/file.service'
-
-import { FileImageDto } from '../file/dto/FIleImage.dto'
+import { Response } from 'express'
 
 import { NewsService } from './news.service'
 
@@ -28,11 +22,6 @@ import { NewsDTO } from './news.dto'
 
 import { ValidateObjectId } from './shared/validate-id.pipes'
 
-import { FileType } from '../file/file.service'
-
-import { ApiTokenCheckMiddleware } from '../../middleware/ApiTokenCheckMiddleware'
-
-//Imports swagger responses
 import { NewsResponseDTO, GetOneNewsDTO } from './swaggerResponse/news.response'
 import { FileInterceptor } from '@nestjs/platform-express'
 
@@ -42,17 +31,13 @@ import {
     ApiResponse,
     ApiOkResponse,
     ApiQuery,
-    ApiConsumes,
 } from '@nestjs/swagger'
 
 //Controller API news
 @ApiTags('news')
 @Controller('news')
 export class NewsController {
-    constructor(
-        private NewsService: NewsService,
-        private FileService: FileService,
-    ) {}
+    constructor(private NewsService: NewsService) {}
 
     @Get()
     @ApiResponse({
@@ -84,7 +69,6 @@ export class NewsController {
                 limit,
                 skip,
             )
-            // header('X-Total-Count', countDocuments.toString())
             return res
                 .status(HttpStatus.OK)
                 .header('X-Total-Count', countDocuments.toString())
@@ -149,36 +133,6 @@ export class NewsController {
         return res.status(HttpStatus.OK).json(response)
     }
 
-    @Post('uploadImage')
-    @ApiBody({
-        description: 'Preview image',
-        type: FileImageDto,
-    })
-    @ApiConsumes('multipart/form-data')
-    @UseInterceptors(FileInterceptor('img'))
-    async createImage(@UploadedFile() img: Express.Multer.File) {
-        const imgName = this.FileService.createFile(FileType.IMAGE, img)
-
-        return imgName
-    }
-
-    @Put('removeImg')
-    async removeImage(
-        @Query('imgName') imgName: string,
-        @Query('newsID') newsID: string,
-        @Res() res: Response,
-    ) {
-        this.FileService.removeFile(imgName)
-
-        const news = await this.NewsService.getOneNews(newsID)
-
-        news.imgName = ''
-
-        const newNews = await this.NewsService.editNews(newsID, news)
-
-        res.status(200).json(newNews)
-    }
-
     @Put(':newsID')
     @ApiBody({ type: NewsDTO })
     @ApiOkResponse({ type: NewsResponseDTO })
@@ -187,8 +141,6 @@ export class NewsController {
         @Res() res: Response,
         @Param('newsID', new ValidateObjectId()) newsID: string,
         @Body() NewsDTO: NewsDTO,
-        @Query() fileName: string,
-        @UploadedFile() img: Express.Multer.File,
     ) {
         const serviceRes = await this.NewsService.editNews(newsID, NewsDTO)
 

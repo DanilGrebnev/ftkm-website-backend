@@ -3,8 +3,6 @@ import { Model } from 'mongoose'
 import { InjectModel } from '@nestjs/mongoose'
 import { NewsDTO } from './news.dto'
 import { News } from './schemas/news.schema'
-import { FileService } from '../file/file.service'
-import { createSearchQuery } from 'src/utils/createSearchQuery'
 
 @Injectable()
 export class NewsService {
@@ -12,13 +10,11 @@ export class NewsService {
         @InjectModel(News.name)
         private readonly newsModel: Model<News>,
     ) {}
-
+        
     async getNews(
         limit: string,
         skip: string,
     ): Promise<{ news: News[]; countDocuments: number }> {
-        // console.log('Поиск без фильтра')
-
         const news = await this.newsModel
             .find()
             .sort({ _id: -1 })
