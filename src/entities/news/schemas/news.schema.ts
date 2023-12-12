@@ -25,7 +25,13 @@ export class News {
     createdDate?: string
 
     @Prop({ required: false })
-    files?: { newsId: string; name: string; href: string; data: string }[]
+    files?: {
+        newsId: string
+        name: string
+        href: string
+        data: string
+        extension: string
+    }[]
 }
 
 export const NewsSchema = SchemaFactory.createForClass(News)

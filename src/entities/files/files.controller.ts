@@ -1,9 +1,7 @@
 import {
     Controller,
-    Get,
     Post,
     Body,
-    Patch,
     Param,
     Delete,
     UseInterceptors,
@@ -18,6 +16,9 @@ import { FileInterceptor } from '@nestjs/platform-express'
 import { storageConfiguration } from 'src/configuration/storageConfiguration'
 import { Request, Response } from 'express'
 import { DeleteFileDTO } from './dto/deleteFile.dto'
+import { IFileData } from './interfaces/IFileData'
+import { Express } from 'express'
+import * as path from 'path'
 
 @ApiTags('files')
 @Controller('files')
@@ -31,22 +32,23 @@ export class FilesController {
         @Res() res: Response,
         @Param('id') id: string,
         @UploadedFile()
-        file,
+        file: Express.Multer.File,
     ) {
         try {
             const url = req.protocol + '://' + req.get('Host') + '/'
 
-            const fileData = {
+            const fileData: IFileData = {
                 newsId: id,
                 name: file.filename,
                 href: url + file.filename,
                 data: file.path,
+                extension: path.parse(file.originalname).ext,
             }
 
-            await this.filesService.uploadFile(fileData)
+            const dataUpload = await this.filesService.uploadFile(fileData)
 
             return res.status(HttpStatus.OK).json({
-                message: 'Файл успешно записан',
+                fileData: dataUpload,
             })
         } catch (err) {
             return res.status(HttpStatus.BAD_REQUEST).json({
@@ -56,18 +58,16 @@ export class FilesController {
         }
     }
 
-    @Get(':id')
-    findFilesByUserId(@Param('id') id: string) {
-        return this.filesService.findFilesByUserId(+id)
-    }
-
-    @Patch(':id')
-    update(@Param('id') id: string, @Body() updateFileDto) {
-        return this.filesService.update(+id, updateFileDto)
-    }
-
     @Delete()
-    async remove(@Body() fileData: DeleteFileDTO) {
-        return await this.filesService.removeFile(fileData)
+    async remove(@Res() res: Response, @Body() fileData: DeleteFileDTO) {
+        try {
+            const files = await this.filesService.removeFile(fileData)
+            res.status(HttpStatus.OK).json({ fileData: files })
+        } catch (error) {
+            res.status(HttpStatus.BAD_REQUEST).json({
+                message: 'error delete file',
+                ...error,
+            })
+        }
     }
 }

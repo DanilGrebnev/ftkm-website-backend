@@ -1,8 +1,9 @@
-import { BadRequestException, HttpException, Injectable } from '@nestjs/common'
+import { HttpException, Injectable } from '@nestjs/common'
 import { Model } from 'mongoose'
 import { InjectModel } from '@nestjs/mongoose'
 import { NewsDTO } from './news.dto'
 import { News } from './schemas/news.schema'
+import { deleteFile } from 'src/utils/deleteFile'
 
 @Injectable()
 export class NewsService {
@@ -10,7 +11,7 @@ export class NewsService {
         @InjectModel(News.name)
         private readonly newsModel: Model<News>,
     ) {}
-        
+
     async getNews(
         limit: string,
         skip: string,
@@ -53,7 +54,7 @@ export class NewsService {
     }
 
     async getLastNews(lastDocCount: number): Promise<News[]> {
-        const countDocument = await this.newsModel.countDocuments()
+        // const countDocument = await this.newsModel.countDocuments()
 
         const news = await this.newsModel
             .find()
@@ -100,7 +101,16 @@ export class NewsService {
     }
 
     async deleteNews(newsID: string) {
+        const news = await this.newsModel.findById(newsID)
+
         const deletedNews = await this.newsModel.findByIdAndDelete(newsID)
+
+        //Удаляем все файлы, связанные с новостью
+        await Promise.allSettled(
+            news.files.map((file) => {
+                return deleteFile('../../uploads/' + file.name)
+            }),
+        )
 
         return deletedNews
     }
