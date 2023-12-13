@@ -7,12 +7,9 @@ import {
     Res,
     HttpStatus,
     Param,
-    NotFoundException,
     Body,
     Query,
-    Req,
     UseInterceptors,
-    UploadedFile,
 } from '@nestjs/common'
 import { Response } from 'express'
 
@@ -87,28 +84,6 @@ export class NewsController {
         return res.json(news).status(HttpStatus.OK)
     }
 
-    @Get('filter')
-    async getFilteredNews(
-        @Res() res: Response,
-        @Query('limit') limit: string,
-        @Query('skip') skip: string,
-        @Query('title') title: string,
-    ) {
-        try {
-            const { news, countDocuments } =
-                await this.NewsService.getFilteredNews(limit, skip, title)
-            return res
-                .status(HttpStatus.OK)
-                .header('X-Total-Count', countDocuments.toString())
-                .json(news)
-        } catch (err) {
-            console.log(err)
-            res.status(HttpStatus.BAD_REQUEST).json({
-                message: 'Ошибка получения новостей',
-            })
-        }
-    }
-
     @Get(':newsID')
     @ApiResponse({
         status: 200,
@@ -116,13 +91,14 @@ export class NewsController {
         type: GetOneNewsDTO,
     })
     async getOneNews(@Res() res: Response, @Param('newsID') newsID: string) {
-        const oneNews = await this.NewsService.getOneNews(newsID)
+        try {
+            const oneNews = await this.NewsService.getOneNews(newsID)
 
-        if (!oneNews) {
-            throw new NotFoundException('News does not exist!')
+            return res.status(HttpStatus.OK).json(oneNews)
+        } catch (err) {
+            console.log(err)
+            return res.status(HttpStatus.BAD_REQUEST)
         }
-
-        return res.status(HttpStatus.OK).json(oneNews)
     }
 
     @Post()

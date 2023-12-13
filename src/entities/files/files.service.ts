@@ -6,7 +6,7 @@ import { InjectModel } from '@nestjs/mongoose'
 import { deleteFile } from 'src/utils/deleteFile'
 import { IFileData } from './interfaces/IFileData'
 import { checklFile } from 'src/utils/checkFile'
-import { deleteFileFromDatabase } from 'src/utils/deleteFileFromDatabase'
+import { pathToUploads } from 'src/configuration/storageConfiguration'
 
 @Injectable()
 export class FilesService {
@@ -38,32 +38,29 @@ export class FilesService {
     }
 
     async uploadFile(fileData: IFileData) {
-        try {
-            const news = await this.newsModel.findById(fileData.newsId)
-            news.files.push(fileData)
-            const updatedNews = await news.save()
+        const news = await this.newsModel.findById(fileData.newsId)
+        
+        news.files.push(fileData)
 
-            return updatedNews.files
-        } catch (err) {
-            console.log(err)
-            return err
-        }
+        const updatedNews = await news.save()
+
+        return updatedNews.files
     }
 
     async removeFile(fileData: DeleteFileDTO) {
         const { fileName } = fileData
-        const fileExist = await checklFile('../../uploads/' + fileName)
+        const fileExist = await checklFile(pathToUploads + fileName)
 
         if (!fileExist) {
             return await this.deleteFileFromDb(fileData)
         }
 
-        const isDelete = await deleteFile('../../uploads/' + fileName)
+        const isDelete = await deleteFile(pathToUploads + fileName)
 
         if (!isDelete.delete) {
             return new Error('Ошибка удаления файла')
         }
+
         return await this.deleteFileFromDb(fileData)
-        // return await deleteFileFromDatabase(fileData)
     }
 }

@@ -4,6 +4,7 @@ import { InjectModel } from '@nestjs/mongoose'
 import { NewsDTO } from './news.dto'
 import { News } from './schemas/news.schema'
 import { deleteFile } from 'src/utils/deleteFile'
+import { checklFile } from 'src/utils/checkFile'
 
 @Injectable()
 export class NewsService {
@@ -31,28 +32,6 @@ export class NewsService {
         return { news, countDocuments }
     }
 
-    async getFilteredNews(
-        limit: string,
-        skip: string,
-        title: string,
-    ): Promise<{ news: News[]; countDocuments: number }> {
-        const filter = { title: { $regex: new RegExp(title, 'i') } }
-
-        const news = await this.newsModel
-            .find(filter)
-            .sort({ _id: -1 })
-            .limit(+limit)
-            .skip(+skip)
-            .exec()
-
-        const countDocuments = await this.newsModel
-            .find(filter)
-            .countDocuments()
-            .exec()
-
-        return { news, countDocuments }
-    }
-
     async getLastNews(lastDocCount: number): Promise<News[]> {
         // const countDocument = await this.newsModel.countDocuments()
 
@@ -67,6 +46,30 @@ export class NewsService {
 
     async getOneNews(newsID: string): Promise<News> {
         const oneNews = await this.newsModel.findById(newsID).exec()
+
+        /**
+         * Перед тем, как отдать пользователю новость,
+         * происходит проверка наличия файлов из статьи.
+         * Если файлы на диске отсутствуют, то произойдёт
+         * удаление записи о файле из базы данных
+         */
+        const filesName = oneNews.files.map((file) => file.name)
+
+        const checkfilePromises = filesName.map(async (name) => {
+            const onDisk = await checklFile('../../uploads/' + name)
+
+            if (!onDisk) {
+                const newFileList = oneNews.files.filter(
+                    (file) => file.name !== name,
+                )
+
+                oneNews.files = newFileList
+
+                await oneNews.save()
+            }
+        })
+
+        await Promise.allSettled(checkfilePromises)
 
         return oneNews
     }

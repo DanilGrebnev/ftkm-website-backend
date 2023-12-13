@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
-import { Document } from 'mongoose'
+import { Document, model } from 'mongoose'
 import { addZeroBeforeDate } from 'src/utils/addZeroBeforeDate'
 
 export type NewsDocument = News & Document
@@ -51,3 +51,5 @@ NewsSchema.pre('save', function (next) {
 
     next()
 })
+
+export const NewsModel = model('News', NewsSchema)
