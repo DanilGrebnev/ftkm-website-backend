@@ -39,7 +39,7 @@ export class FilesService {
 
     async uploadFile(fileData: IFileData) {
         const news = await this.newsModel.findById(fileData.newsId)
-        
+
         news.files.push(fileData)
 
         const updatedNews = await news.save()
@@ -48,17 +48,19 @@ export class FilesService {
     }
 
     async removeFile(fileData: DeleteFileDTO) {
-        const { fileName } = fileData
-        const fileExist = await checklFile(pathToUploads + fileName)
+        const { fileName, newsId } = fileData
 
-        if (!fileExist) {
+        // проверяет наличие файла на диске
+        const fileOnServer = await checklFile(pathToUploads + fileName)
+
+        if (!fileOnServer) {
             return await this.deleteFileFromDb(fileData)
         }
-
+        //Удаление файла с диска
         const isDelete = await deleteFile(pathToUploads + fileName)
 
         if (!isDelete.delete) {
-            return new Error('Ошибка удаления файла')
+            return []
         }
 
         return await this.deleteFileFromDb(fileData)

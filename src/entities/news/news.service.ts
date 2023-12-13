@@ -46,6 +46,7 @@ export class NewsService {
 
     async getOneNews(newsID: string): Promise<News> {
         const oneNews = await this.newsModel.findById(newsID).exec()
+        if (!oneNews.files.length) return oneNews
 
         /**
          * Перед тем, как отдать пользователю новость,

@@ -59,9 +59,10 @@ export class FilesController {
     }
 
     @Delete()
-    async remove(@Res() res: Response, @Body() fileData: DeleteFileDTO) {
+    async removeFile(@Res() res: Response, @Body() fileData: DeleteFileDTO) {
         try {
             const files = await this.filesService.removeFile(fileData)
+
             res.status(HttpStatus.OK).json({ fileData: files })
         } catch (error) {
             res.status(HttpStatus.BAD_REQUEST).json({
