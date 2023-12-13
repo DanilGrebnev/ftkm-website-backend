@@ -12,7 +12,7 @@ export const deleteFile = async (
     return await new Promise((resolve, reject) => {
         fs.unlink(path.resolve(__dirname, pathToFile), (err) => {
             if (err) {
-                reject({
+                resolve({
                     delete: false,
                     error: err,
                 })

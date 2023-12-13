@@ -13,6 +13,7 @@ import { UserModule } from './entities/user/user.module'
 import * as path from 'path'
 import { ApiTokenCheckMiddleware } from './middleware/ApiTokenCheckMiddleware'
 import { NewsController } from './entities/news/news.controller'
+import { FilesController } from './entities/files/files.controller'
 import { FilesModule } from './entities/files/files.module'
 
 @Module({
@@ -34,6 +35,7 @@ import { FilesModule } from './entities/files/files.module'
     controllers: [],
     providers: [],
 })
+
 export class AppModule implements NestModule {
     //Установка промежуточного обработчика
     configure(consumer: MiddlewareConsumer) {
@@ -48,23 +50,8 @@ export class AppModule implements NestModule {
                     path: 'news/:newsID',
                     method: RequestMethod.GET,
                 },
-                'cats/(.*)',
             )
-            .forRoutes(NewsController)
+            // Указание контроллеов, которые должны проходит через middleware
+            .forRoutes(NewsController, FilesController)
     }
 }
-
-// .forRoutes(
-//     {
-//         path: 'news',
-//         method: RequestMethod.POST,
-//     },
-//     {
-//         path: 'news',
-//         method: RequestMethod.PUT,
-//     },
-//     {
-//         path: 'news',
-//         method: RequestMethod.DELETE,
-//     },
-// )

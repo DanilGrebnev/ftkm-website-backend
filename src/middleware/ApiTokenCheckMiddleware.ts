@@ -18,12 +18,6 @@ export class ApiTokenCheckMiddleware implements NestMiddleware {
 
         const token = returnTokenFromHeaders(req)
 
-        // console.log(`
-        // ===============================================
-        // worked middleware ApiTokenCheck
-        // ===============================================
-        // `)
-
         if (!token) {
             throw new NotAcceptableException(userResponse.not_access)
         }
