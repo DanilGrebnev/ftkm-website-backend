@@ -30,7 +30,6 @@ import {
     ApiQuery,
 } from '@nestjs/swagger'
 
-//Controller API news
 @ApiTags('news')
 @Controller('news')
 export class NewsController {
@@ -78,10 +77,8 @@ export class NewsController {
     }
 
     @Get('lastDoc')
-    async getLastNews(@Res() res: Response, @Query('limit') limit: number) {
-        const news = await this.NewsService.getLastNews(limit)
-
-        return res.json(news).status(HttpStatus.OK)
+    async getLastNews(@Query('limit') limit: number) {
+        return await this.NewsService.getLastNews(limit)
     }
 
     @Get(':newsID')
@@ -90,23 +87,14 @@ export class NewsController {
         description: 'return one news',
         type: GetOneNewsDTO,
     })
-    async getOneNews(@Res() res: Response, @Param('newsID') newsID: string) {
-        try {
-            const oneNews = await this.NewsService.getOneNews(newsID)
-
-            return res.status(HttpStatus.OK).json(oneNews)
-        } catch (err) {
-            console.log(err)
-            return res.status(HttpStatus.BAD_REQUEST)
-        }
+    async getOneNews(@Param('newsID') newsID: string) {
+        return await this.NewsService.getOneNews(newsID)
     }
 
     @Post()
     @ApiOkResponse({ type: NewsResponseDTO })
-    async addNews(@Res() res: Response, @Body() NewsDTO: NewsDTO) {
-        const response = await this.NewsService.addNews(NewsDTO)
-
-        return res.status(HttpStatus.OK).json(response)
+    async addNews(@Body() NewsDTO: NewsDTO) {
+        return await this.NewsService.addNews(NewsDTO)
     }
 
     @Put(':newsID')
@@ -114,22 +102,14 @@ export class NewsController {
     @ApiOkResponse({ type: NewsResponseDTO })
     @UseInterceptors(FileInterceptor('img'))
     async editNews(
-        @Res() res: Response,
         @Param('newsID', new ValidateObjectId()) newsID: string,
         @Body() NewsDTO: NewsDTO,
     ) {
-        const serviceRes = await this.NewsService.editNews(newsID, NewsDTO)
-
-        return res.json(serviceRes)
+        return await this.NewsService.editNews(newsID, NewsDTO)
     }
 
     @Delete(':newsID')
-    async deleteNews(
-        @Res() res: Response,
-        @Param('newsID', new ValidateObjectId()) newsID: string,
-    ) {
-        const response = this.NewsService.deleteNews(newsID)
-
-        return res.status(HttpStatus.OK).json(response)
+    async deleteNews(@Param('newsID', new ValidateObjectId()) newsID: string) {
+        return this.NewsService.deleteNews(newsID)
     }
 }

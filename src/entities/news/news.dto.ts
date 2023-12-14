@@ -11,6 +11,9 @@ export class NewsDTO {
     readonly body: string
 
     @ApiPropertyOptional()
+    video: string
+
+    @ApiPropertyOptional()
     readonly createdDay?: number
 
     @ApiPropertyOptional()

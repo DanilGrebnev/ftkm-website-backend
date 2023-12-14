@@ -1,10 +1,17 @@
-import { HttpException, Injectable } from '@nestjs/common'
+import { pathToUploads } from './../../configuration/storageConfiguration'
+import {
+    HttpException,
+    HttpStatus,
+    Injectable,
+    NotFoundException,
+} from '@nestjs/common'
 import { Model } from 'mongoose'
 import { InjectModel } from '@nestjs/mongoose'
 import { NewsDTO } from './news.dto'
 import { News } from './schemas/news.schema'
 import { deleteFile } from 'src/utils/deleteFile'
 import { checklFile } from 'src/utils/checkFile'
+import { Response } from 'express'
 
 @Injectable()
 export class NewsService {
@@ -33,8 +40,6 @@ export class NewsService {
     }
 
     async getLastNews(lastDocCount: number): Promise<News[]> {
-        // const countDocument = await this.newsModel.countDocuments()
-
         const news = await this.newsModel
             .find()
             .sort({ _id: -1 })
@@ -44,8 +49,15 @@ export class NewsService {
         return news
     }
 
-    async getOneNews(newsID: string): Promise<News> {
+    async getOneNews(newsID: string): Promise<News | any> {
         const oneNews = await this.newsModel.findById(newsID).exec()
+
+        if (!oneNews) {
+            throw new NotFoundException({ message: 'Статья не найдена' })
+        }
+        /**
+         * Если у новости нет файлов, то сразу возвращаем новость
+         */
         if (!oneNews.files.length) return oneNews
 
         /**
@@ -57,7 +69,7 @@ export class NewsService {
         const filesName = oneNews.files.map((file) => file.name)
 
         const checkfilePromises = filesName.map(async (name) => {
-            const onDisk = await checklFile('../../uploads/' + name)
+            const onDisk = await checklFile(pathToUploads + name)
 
             if (!onDisk) {
                 const newFileList = oneNews.files.filter(
@@ -79,42 +91,54 @@ export class NewsService {
         try {
             const newNews = new this.newsModel(NewsDTO)
 
-            const response = await newNews.save()
-
-            return response
+            return await newNews.save()
         } catch (err) {
             throw new HttpException('Ошибка отправки', 401)
         }
     }
 
     async editNews(newsID: string, NewsDTO: NewsDTO): Promise<News | any> {
-        try {
-            const editNews = await this.newsModel.findByIdAndUpdate(
-                newsID,
-                NewsDTO,
-                {
-                    new: true,
-                    upsert: true,
-                },
-            )
+        const news = await this.newsModel.findById(newsID)
 
-            return editNews
-        } catch (error) {
-            return error
+        if (!news) {
+            throw new HttpException(
+                {
+                    message: 'Ошибка редактирования, статьи не существует.',
+                },
+                HttpStatus.NOT_FOUND,
+            )
         }
+
+        const editNews = await this.newsModel.findByIdAndUpdate(
+            newsID,
+            NewsDTO,
+            {
+                new: true,
+                upsert: true,
+            },
+        )
+
+        return editNews
     }
 
     async deleteNews(newsID: string) {
         const news = await this.newsModel.findById(newsID)
 
-        const deletedNews = await this.newsModel.findByIdAndDelete(newsID)
+        if (!news) {
+            throw new HttpException(
+                { message: 'Статья не найдена' },
+                HttpStatus.NOT_FOUND,
+            )
+        }
 
         //Удаляем все файлы, связанные с новостью
         await Promise.allSettled(
-            news.files.map((file) => {
-                return deleteFile('../../uploads/' + file.name)
+            news?.files.map((file) => {
+                return deleteFile(pathToUploads + file.name)
             }),
         )
+
+        const deletedNews = await this.newsModel.findByIdAndDelete(newsID)
 
         return deletedNews
     }

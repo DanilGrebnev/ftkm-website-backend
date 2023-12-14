@@ -12,6 +12,9 @@ export class News {
     @Prop({ required: true })
     body: string
 
+    @Prop({ default: '' })
+    video: string
+
     @Prop({ required: false })
     createdDay?: number
 
@@ -24,7 +27,7 @@ export class News {
     @Prop()
     createdDate?: string
 
-    @Prop({ required: false })
+    @Prop({ required: false, default: [] })
     files?: {
         newsId: string
         name: string
