@@ -6,7 +6,6 @@ import {
 } from '@nestjs/common'
 import { MongooseModule } from '@nestjs/mongoose'
 import { NewsModule } from './entities/news/news.module'
-import { GetDocumentCountMiddleware } from './entities/news/middleware/CountDocumentsMiddleware'
 import { ConfigModule } from '@nestjs/config'
 import { ServeStaticModule } from '@nestjs/serve-static'
 import { UserModule } from './entities/user/user.module'
@@ -35,7 +34,6 @@ import { FilesModule } from './entities/files/files.module'
     controllers: [],
     providers: [],
 })
-
 export class AppModule implements NestModule {
     //Установка промежуточного обработчика
     configure(consumer: MiddlewareConsumer) {

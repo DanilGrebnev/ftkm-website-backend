@@ -11,7 +11,7 @@ import { NewsDTO } from './news.dto'
 import { News } from './schemas/news.schema'
 import { deleteFile } from 'src/utils/deleteFile'
 import { checklFile } from 'src/utils/checkFile'
-import { Response } from 'express'
+import { deleteFileFromDB } from 'src/utils/deleteFileFromDB'
 
 @Injectable()
 export class NewsService {
@@ -50,41 +50,32 @@ export class NewsService {
     }
 
     async getOneNews(newsID: string): Promise<News | any> {
-        const oneNews = await this.newsModel.findById(newsID).exec()
+        const news = await this.newsModel.findById(newsID).exec()
 
-        if (!oneNews) {
+        if (!news) {
             throw new NotFoundException({ message: 'Статья не найдена' })
         }
         /**
          * Если у новости нет файлов, то сразу возвращаем новость
          */
-        if (!oneNews.files.length) return oneNews
+        if (!news.files.length) return news
 
         /**
          * Перед тем, как отдать пользователю новость,
-         * происходит проверка наличия файлов из статьи.
+         * происходит проверка наличия файлов.
          * Если файлы на диске отсутствуют, то произойдёт
          * удаление записи о файле из базы данных
          */
-        const filesName = oneNews.files.map((file) => file.name)
+        const filesName = news.files.map((file) => file.name)
 
-        const checkfilePromises = filesName.map(async (name) => {
-            const onDisk = await checklFile(pathToUploads + name)
-
-            if (!onDisk) {
-                const newFileList = oneNews.files.filter(
-                    (file) => file.name !== name,
-                )
-
-                oneNews.files = newFileList
-
-                await oneNews.save()
+        for await (const fileName of filesName) {
+            const onDrive = await checklFile(pathToUploads + fileName)
+            if (!onDrive) {
+                await deleteFileFromDB({ document: news, fileName })
             }
-        })
+        }
 
-        await Promise.allSettled(checkfilePromises)
-
-        return oneNews
+        return news
     }
 
     async addNews(NewsDTO: NewsDTO): Promise<News | { error: any }> {

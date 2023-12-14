@@ -56,3 +56,4 @@ NewsSchema.pre('save', function (next) {
 })
 
 export const NewsModel = model('News', NewsSchema)
+export type INewsModel = typeof NewsModel
