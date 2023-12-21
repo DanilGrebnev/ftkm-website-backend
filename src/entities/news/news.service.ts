@@ -51,9 +51,9 @@ export class NewsService {
 
     async getOneNews(newsID: string): Promise<News | any> {
         const news = await this.newsModel.findById(newsID).exec()
-
+        
         if (!news) {
-            throw new NotFoundException({ message: 'Статья не найдена' })
+            throw new NotFoundException('Статья не найдена')
         }
         /**
          * Если у новости нет файлов, то сразу возвращаем новость
@@ -93,9 +93,7 @@ export class NewsService {
 
         if (!news) {
             throw new HttpException(
-                {
-                    message: 'Ошибка редактирования, статьи не существует.',
-                },
+                'Ошибка редактирования, статьи не существует.',
                 HttpStatus.NOT_FOUND,
             )
         }
