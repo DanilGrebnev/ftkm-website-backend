@@ -1,3 +1,4 @@
+//@ts-nocheck
 import {
     Module,
     NestModule,
@@ -6,7 +7,7 @@ import {
 } from '@nestjs/common'
 import { MongooseModule } from '@nestjs/mongoose'
 import { NewsModule } from './entities/news/news.module'
-import { ConfigModule } from '@nestjs/config'
+import { ConfigModule, ConfigService } from '@nestjs/config'
 import { ServeStaticModule } from '@nestjs/serve-static'
 import { UserModule } from './entities/user/user.module'
 import * as path from 'path'
@@ -14,6 +15,7 @@ import { ApiTokenCheckMiddleware } from './middleware/ApiTokenCheckMiddleware'
 import { NewsController } from './entities/news/news.controller'
 import { FilesController } from './entities/files/files.controller'
 import { FilesModule } from './entities/files/files.module'
+import 'dotenv/config'
 
 @Module({
     imports: [
@@ -23,9 +25,7 @@ import { FilesModule } from './entities/files/files.module'
         ServeStaticModule.forRoot({
             rootPath: path.join(__dirname, 'static'),
         }),
-        MongooseModule.forRoot('mongodb://127.0.0.1/' + 'ftkm', {
-            useNewUrlParser: true,
-        }),
+        MongooseModule.forRoot(process.env.DATABASE_URL),
         NewsModule,
         UserModule,
         FilesModule,

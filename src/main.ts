@@ -2,13 +2,12 @@ import { NestFactory } from '@nestjs/core'
 import { AppModule } from './app.module'
 import { SwaggerConfig } from './swaggerConfig'
 import { CorsOptions } from '@nestjs/common/interfaces/external/cors-options.interface'
-import { configuration } from './configuration'
 import { NestExpressApplication } from '@nestjs/platform-express'
 import * as path from 'path'
 
-async function bootstrap() {
-    const { db_port } = configuration
+const PORT = parseInt(process.env.APP_PORT, 10)
 
+async function bootstrap() {
     const options: CorsOptions = {
         origin: '*',
         methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
@@ -26,8 +25,8 @@ async function bootstrap() {
     //Swagger документация
     SwaggerConfig.setup(app)
 
-    await app.listen(8089, () => {
-        console.log('Server started on port ' + db_port)
+    await app.listen(PORT, () => {
+        console.log('Server started on port ' + PORT)
     })
 }
 
