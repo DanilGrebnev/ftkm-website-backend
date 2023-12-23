@@ -5,7 +5,7 @@ import { CorsOptions } from '@nestjs/common/interfaces/external/cors-options.int
 import { NestExpressApplication } from '@nestjs/platform-express'
 import * as path from 'path'
 
-const PORT = parseInt(process.env.APP_PORT, 10)
+const PORT = parseInt(process.env.PORT, 10)
 
 async function bootstrap() {
     const options: CorsOptions = {
