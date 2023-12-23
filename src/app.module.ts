@@ -25,7 +25,13 @@ import 'dotenv/config'
         ServeStaticModule.forRoot({
             rootPath: path.join(__dirname, 'static'),
         }),
-        MongooseModule.forRoot(process.env.DATABASE_URL),
+        MongooseModule.forRootAsync({
+            useFactory: () => {
+                const uri = process.env.MONGO_URI
+                console.log('db uri:', uri)
+                return { uri }
+            },
+        }),
         NewsModule,
         UserModule,
         FilesModule,

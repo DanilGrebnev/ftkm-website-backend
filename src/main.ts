@@ -5,7 +5,7 @@ import { CorsOptions } from '@nestjs/common/interfaces/external/cors-options.int
 import { NestExpressApplication } from '@nestjs/platform-express'
 import * as path from 'path'
 
-const PORT = parseInt(process.env.PORT, 10)
+const PORT = process.env.PORT
 
 async function bootstrap() {
     const options: CorsOptions = {
@@ -13,6 +13,8 @@ async function bootstrap() {
         methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
         exposedHeaders: ['x-total-count'],
     }
+
+    console.log(`App use port: ${PORT} for start`)
 
     const app = await NestFactory.create<NestExpressApplication>(AppModule, {
         cors: true,
