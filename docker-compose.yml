@@ -7,9 +7,8 @@ services:
       context: .
       dockerfile: ./Dockerfile
     volumes:
-      - .:/ftkm/src/app
-      - /ftkm/src/app/node_modules
-    command: npm run start:prod
+      - .:/ftkm/app
+      - /ftkm/app/node_modules
     env_file:
       - .env
     ports:

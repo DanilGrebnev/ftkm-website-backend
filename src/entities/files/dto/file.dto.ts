@@ -8,9 +8,6 @@ export class FileDTO {
     readonly name: string
 
     @ApiProperty()
-    readonly href: string
-
-    @ApiProperty()
     readonly data: string
 
     @ApiProperty()

@@ -40,12 +40,9 @@ export class FilesController {
         file: Express.Multer.File,
     ) {
         try {
-            const url = req.protocol + '://' + req.get('Host') + '/'
-
             const fileData: FileDTO = {
                 newsId: id,
                 name: file.filename,
-                href: url + file.filename,
                 data: file.path,
                 extension: path.parse(file.originalname).ext,
             }
