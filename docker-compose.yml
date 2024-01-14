@@ -11,6 +11,7 @@ services:
       - /ftkm/app/node_modules
     env_file:
       - .env
+    # Внешний порт:внутренний порт
     ports:
       - 8089:8089
     environment:
@@ -22,7 +23,7 @@ services:
       - mongo
     networks:
       - db_network
-    restart: unless-stopped
+    restart: always
 
 # Database config
   mongo:
@@ -34,13 +35,16 @@ services:
       - dbdata:/data/db
     networks:
       - db_network
-    restart: unless-stopped
+    restart: always
+    
 # Client config
-  client:
-    build: ../client
-    container_name: client
+  frontend:
+    build: ../frontend
+    container_name: frontend
+    # Внешний порт:внутренний порт
     ports:
-    - '8090:8090'
+    - '3000:3000'
+    restart: always
 
 networks:
   db_network:
