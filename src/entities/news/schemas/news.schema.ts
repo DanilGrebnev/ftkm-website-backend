@@ -1,10 +1,10 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
-import { Document, model } from 'mongoose'
+import { Document } from 'mongoose'
 import { addZeroBeforeDate } from 'src/utils/addZeroBeforeDate'
 
 export type NewsDocument = News & Document
 
-@Schema()
+@Schema({ versionKey: false })
 export class News {
     @Prop({ required: true })
     title: string
@@ -53,6 +53,3 @@ NewsSchema.pre('save', function (next) {
 
     next()
 })
-
-export const NewsModel = model('News', NewsSchema)
-export type INewsModel = typeof NewsModel

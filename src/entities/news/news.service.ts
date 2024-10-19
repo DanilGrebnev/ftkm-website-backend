@@ -24,34 +24,37 @@ export class NewsService {
         limit: string,
         skip: string,
     ): Promise<{ news: News[]; countDocuments: number }> {
-        const news = await this.newsModel
+        const newsPromise = this.newsModel
             .find()
             .sort({ _id: -1 })
             .limit(+limit)
             .skip(+skip)
             .exec()
 
-        const countDocuments = await this.newsModel
+        const countDocumentsPromise = this.newsModel
             .find()
             .countDocuments()
             .exec()
+
+        const [news, countDocuments] = await Promise.all([
+            newsPromise,
+            countDocumentsPromise,
+        ])
 
         return { news, countDocuments }
     }
 
     async getLastNews(lastDocCount: number): Promise<News[]> {
-        const news = await this.newsModel
+        return await this.newsModel
             .find()
             .sort({ _id: -1 })
             .limit(+lastDocCount)
             .exec()
-
-        return news
     }
 
     async getOneNews(newsID: string): Promise<News | any> {
         const news = await this.newsModel.findById(newsID).exec()
-        
+
         if (!news) {
             throw new NotFoundException('Статья не найдена')
         }

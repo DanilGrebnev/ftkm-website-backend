@@ -1,6 +1,6 @@
 FROM node:18-alpine
 # create app directory, this is our container/in our image
-WORKDIR /ftkm/app
+WORKDIR /ftkm/backend
 COPY package*.json ./
 RUN npm install
 COPY . .

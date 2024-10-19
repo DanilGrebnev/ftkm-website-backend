@@ -1,5 +1,6 @@
-import { SwaggerModule, DocumentBuilder, OpenAPIObject } from '@nestjs/swagger'
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger'
 
+// http://localhost:port/swagger
 export class SwaggerConfig {
     static config = new DocumentBuilder()
         .setTitle('FTKM backend')
