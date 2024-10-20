@@ -1,10 +1,8 @@
 import {
     Injectable,
     NotFoundException,
-    HttpException,
-    BadRequestException,
     NotAcceptableException,
-    Req,
+    OnModuleInit,
 } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
@@ -16,14 +14,18 @@ import { generateAccessToken } from '../../utils/genereteAccessToken'
 import { JwtService } from '@nestjs/jwt'
 import { Request } from 'express'
 import { configuration } from 'src/configuration'
-import { ApiResponse } from '@nestjs/swagger'
+import { usersModuleInit } from './users.moduleInit'
 
 @Injectable()
-export class UserService {
+export class UserService implements OnModuleInit {
     constructor(
         @InjectModel(User.name)
         private readonly userModel: Model<User>,
     ) {}
+
+    async onModuleInit() {
+        await usersModuleInit(this.userModel)
+    }
 
     async login(userDto: UserDTO): Promise<string | void> {
         const filter = { login: userDto?.login }

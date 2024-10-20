@@ -5,7 +5,7 @@ services:
     container_name: backend
     build:
       context: .
-      dockerfile: ./Dockerfile
+      dockerfile: Dockerfile
     volumes:
       - .:/ftkm/app
       - /ftkm/app/node_modules
@@ -14,6 +14,7 @@ services:
     # Внешний порт:внутренний порт
     ports:
       - 8089:8089
+      # установка переменных окружения
     environment:
       # установка порта запуска приложения
       - PORT=8089
@@ -36,7 +37,7 @@ services:
     networks:
       - db_network
     restart: always
-    
+
 # Client config
   frontend:
     build: ../frontend

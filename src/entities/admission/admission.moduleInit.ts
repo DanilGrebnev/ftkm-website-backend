@@ -3,7 +3,6 @@ import { Admission } from './schema/admission.schema'
 
 // Инициализация
 export const admissionModuleInit = async (admissionModel: Model<Admission>) => {
-    console.log('Выполнение модуля инициализации admissionModuleInit')
     console.log('Проверка существования информации о поступлении')
     const currentAdmission = await admissionModel.find()
 

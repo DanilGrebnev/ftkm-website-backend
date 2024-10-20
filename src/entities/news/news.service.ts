@@ -1,4 +1,4 @@
-import { pathToUploads } from './../../configuration/storageConfiguration'
+import { pathToUploads } from '../../configuration/storageConfiguration'
 import {
     HttpException,
     HttpStatus,
