@@ -17,7 +17,7 @@ export class ApiTokenCheckMiddleware implements NestMiddleware {
         const jwt = new JwtService()
 
         const token = returnTokenFromHeaders(req)
-
+        
         if (!token) {
             throw new NotAcceptableException(userResponse.not_access)
         }

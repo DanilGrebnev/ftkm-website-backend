@@ -15,11 +15,10 @@ import { Response } from 'express'
 
 import { NewsService } from './news.service'
 
-import { NewsDTO } from './news.dto'
+import { CreateNewsDTO, NewsDTO, ResponseNewsDTO, UpdateNewsDTO } from './news.dto'
 
 import { ValidateObjectId } from './shared/validate-id.pipes'
 
-import { NewsResponseDTO, GetOneNewsDTO } from './swaggerResponse/news.response'
 import { FileInterceptor } from '@nestjs/platform-express'
 
 import {
@@ -39,7 +38,7 @@ export class NewsController {
     @ApiResponse({
         status: 200,
         description: 'return all news',
-        type: [NewsResponseDTO],
+        type: [ResponseNewsDTO],
     })
     @ApiResponse({
         status: HttpStatus.BAD_REQUEST,
@@ -76,40 +75,36 @@ export class NewsController {
         }
     }
 
-    @Get('lastDoc')
-    async getLastNews(@Query('limit') limit: number) {
-        return await this.NewsService.getLastNews(limit)
-    }
-
-    @Get(':newsID')
+    @Get(':newsId')
     @ApiResponse({
         status: 200,
         description: 'return one news',
-        type: GetOneNewsDTO,
+        type: ResponseNewsDTO,
     })
-    async getOneNews(@Param('newsID') newsID: string) {
-        return await this.NewsService.getOneNews(newsID)
+    async getOneNews(@Param('newsId') newsId: string) {
+        return await this.NewsService.getOneNews(newsId)
     }
 
     @Post()
-    @ApiOkResponse({ type: NewsResponseDTO })
+    @ApiBody({ type: CreateNewsDTO, description: 'Body data' })
+    @ApiOkResponse({ type: ResponseNewsDTO })
     async addNews(@Body() NewsDTO: NewsDTO) {
         return await this.NewsService.addNews(NewsDTO)
     }
 
-    @Put(':newsID')
-    @ApiBody({ type: NewsDTO })
-    @ApiOkResponse({ type: NewsResponseDTO })
+    @Put(':newsId')
+    @ApiBody({ type: UpdateNewsDTO, description: 'Body data' })
+    @ApiOkResponse({ type: ResponseNewsDTO })
     @UseInterceptors(FileInterceptor('img'))
     async editNews(
-        @Param('newsID', new ValidateObjectId()) newsID: string,
+        @Param('newsId', new ValidateObjectId()) newsId: string,
         @Body() NewsDTO: NewsDTO,
     ) {
-        return await this.NewsService.editNews(newsID, NewsDTO)
+        return await this.NewsService.editNews(newsId, NewsDTO)
     }
 
-    @Delete(':newsID')
-    async deleteNews(@Param('newsID', new ValidateObjectId()) newsID: string) {
-        return this.NewsService.deleteNews(newsID)
+    @Delete(':newsId')
+    async deleteNews(@Param('newsId', new ValidateObjectId()) newsId: string) {
+        return this.NewsService.deleteNews(newsId)
     }
 }
