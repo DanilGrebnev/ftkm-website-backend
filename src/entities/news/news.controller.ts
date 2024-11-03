@@ -15,7 +15,12 @@ import { Response } from 'express'
 
 import { NewsService } from './news.service'
 
-import { CreateNewsDTO, NewsDTO, ResponseNewsDTO, UpdateNewsDTO } from './news.dto'
+import {
+    CreateNewsDTO,
+    NewsDTO,
+    ResponseNewsDTO,
+    UpdateNewsDTO,
+} from './news.dto'
 
 import { ValidateObjectId } from './shared/validate-id.pipes'
 
@@ -28,6 +33,7 @@ import {
     ApiOkResponse,
     ApiQuery,
 } from '@nestjs/swagger'
+import { QueryFilters } from './shared/types'
 
 @ApiTags('news')
 @Controller('news')
@@ -54,15 +60,21 @@ export class NewsController {
         required: true,
         type: Number,
     })
+    @ApiQuery({
+        name: 'filters',
+        required: false,
+    })
     async getNews(
         @Res() res: Response,
         @Query('limit') limit: string,
         @Query('skip') skip: string,
+        @Query('filters') filters?: QueryFilters,
     ) {
         try {
             const { news, countDocuments } = await this.NewsService.getNews(
                 limit,
                 skip,
+                filters,
             )
             return res
                 .status(HttpStatus.OK)
@@ -71,6 +83,7 @@ export class NewsController {
         } catch (err) {
             res.status(HttpStatus.BAD_REQUEST).json({
                 message: 'Ошибка получения новостей',
+                error: err,
             })
         }
     }

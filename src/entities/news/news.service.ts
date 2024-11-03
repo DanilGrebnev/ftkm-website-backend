@@ -12,6 +12,8 @@ import { News } from './schemas/news.schema'
 import { deleteFile } from 'src/utils/deleteFile'
 import { checklFile } from 'src/utils/checkFile'
 import { deleteFileFromDB } from 'src/utils/deleteFileFromDB'
+import { QueryFilters } from './shared/types'
+import { createFilters } from './shared/lib/createFilters'
 
 @Injectable()
 export class NewsService {
@@ -23,9 +25,12 @@ export class NewsService {
     async getNews(
         limit: string,
         skip: string,
+        filters?: QueryFilters,
     ): Promise<{ news: News[]; countDocuments: number }> {
+        const filter = createFilters(filters)
+
         const newsPromise = this.newsModel
-            .find()
+            .find({ createdDay: { $gte: 4 } })
             .sort({ _id: -1 })
             .limit(+limit)
             .skip(+skip)
@@ -42,14 +47,6 @@ export class NewsService {
         ])
 
         return { news, countDocuments }
-    }
-
-    async getLastNews(lastDocCount: number): Promise<News[]> {
-        return await this.newsModel
-            .find()
-            .sort({ _id: -1 })
-            .limit(+lastDocCount)
-            .exec()
     }
 
     async getOneNews(newsID: string): Promise<News | any> {
