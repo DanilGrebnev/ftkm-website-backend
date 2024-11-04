@@ -30,7 +30,7 @@ export class NewsService {
         const filter = createFilters(filters)
 
         const newsPromise = this.newsModel
-            .find({ createdDay: { $gte: 4 } })
+            .find(filter)
             .sort({ _id: -1 })
             .limit(+limit)
             .skip(+skip)

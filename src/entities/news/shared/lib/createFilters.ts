@@ -1,30 +1,31 @@
-import { QueryFilters } from '../types'
+import { QueryFilters, DateFiltersValue } from '../types'
+import { isDateFilter } from './isDateFilter'
+import { isAssignOperators } from './isAssignOperators'
 
-type DateFiltersKey = 'createdDay' | 'createdMonth' | 'createdYear'
-type DateFiltersOperators = '$lte' | '$gte' | '$eq'
-type DateFiltersValue = Partial<Record<DateFiltersOperators, number>>
+type CreatedFilters = Omit<QueryFilters, 'title'> & { title?: RegExp }
 
-type Filters = {
-    title?: string
-} & Partial<Record<DateFiltersKey, DateFiltersValue>>
-
-export const createFilters = (filters?: QueryFilters) => {
+export const createFilters = (filters?: QueryFilters): CreatedFilters => {
     if (!filters) return
     const filter = {}
     const parseFilters = JSON.parse(filters as string)
 
     Object.entries(parseFilters).forEach(
-        ([k, v]: [keyof QueryFilters, string | undefined]) => {
+        ([k, v]: [keyof QueryFilters, string | DateFiltersValue]) => {
             if (!v) return
-            if (k === 'title' && v) {
-                filter[k] = new RegExp(v, 'i')
+            if (k === 'title') {
+                const textValue = v as string
+                filter[k] = new RegExp(textValue, 'i')
+                return
             }
-            if (
-                k === 'createdDay' ||
-                k === 'createdMonth' ||
-                k === 'createdYear'
-            ) {
-                filter[k] = +v
+
+            if (isDateFilter(k)) {
+                const dateValue = v as DateFiltersValue
+
+                for (const dateOperatorsKey in dateValue) {
+                    if (!isAssignOperators(dateOperatorsKey)) return
+                }
+
+                filter[k] = dateValue
             }
         },
     )
