@@ -1,6 +1,6 @@
 export type DateFiltersKey = 'createdDay' | 'createdMonth' | 'createdYear'
 
-export type TOperatorKeys = '$lte' | '$gte'
+export type TOperatorKeys = '$lte' | '$gte' | '$eq'
 
 export type TDateFilterOperators = Partial<Record<TOperatorKeys, string>>
 
