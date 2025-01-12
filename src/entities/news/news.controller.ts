@@ -63,6 +63,7 @@ export class NewsController {
     @ApiQuery({
         name: 'filters',
         required: false,
+        description: 'Date and title filter',
     })
     async getNews(
         @Res() res: Response,

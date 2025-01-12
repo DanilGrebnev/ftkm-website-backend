@@ -1,6 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import { Document } from 'mongoose'
-import { addZeroBeforeDate } from 'src/utils/addZeroBeforeDate'
 
 export type NewsDocument = News & Document
 
@@ -24,8 +23,8 @@ export class News {
     @Prop()
     createdMonth?: number
 
-    @Prop()
-    createdDate?: string
+    @Prop({ required: false })
+    createdDate?: number
 
     @Prop({ required: false, default: [] })
     files?: {
@@ -41,15 +40,15 @@ export const NewsSchema = SchemaFactory.createForClass(News)
 NewsSchema.pre('save', function (next) {
     const now = new Date()
 
-    this.createdDay = now.getUTCDate()
+    this.createdDay = now.getDate()
 
-    this.createdMonth = now.getUTCMonth() + 1
+    this.createdMonth = now.getMonth() + 1
 
-    this.createdYear = now.getUTCFullYear()
+    this.createdYear = now.getFullYear()
 
-    this.createdDate = `${addZeroBeforeDate(
-        this.createdDay,
-    )}.${addZeroBeforeDate(this.createdMonth)}.${this.createdYear}`
+    const date = `${this.createdYear}-${this.createdMonth}-${this.createdDay}`
+
+    this.createdDate = new Date(date).getTime()
 
     next()
 })

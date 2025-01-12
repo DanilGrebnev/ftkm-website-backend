@@ -27,10 +27,8 @@ export class NewsService {
         skip: string,
         filters?: QueryFilters,
     ): Promise<{ news: News[]; countDocuments: number }> {
-        const filter = createFilters(filters)
-
         const newsPromise = this.newsModel
-            .find(filter)
+            .find(createFilters(filters))
             .sort({ _id: -1 })
             .limit(+limit)
             .skip(+skip)

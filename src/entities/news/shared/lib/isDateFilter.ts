@@ -1,5 +1,10 @@
-import { DateFiltersKey, QueryFilters } from '../types'
+import {
+    QueryFilters,
+    TDateFilter,
+    TDateFilterOperators,
+    TOperatorKeys,
+} from '../types'
 
-export function isDateFilter(k: keyof QueryFilters): k is DateFiltersKey {
-    return k === 'createdDay' || k === 'createdMonth' || k === 'createdYear'
+export function isDateFilter(k: any, v: any): v is TDateFilterOperators {
+    return k === 'createdDate'
 }

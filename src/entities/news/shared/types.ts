@@ -1,7 +1,10 @@
 export type DateFiltersKey = 'createdDay' | 'createdMonth' | 'createdYear'
-export type DateFiltersOperators = '$lte' | '$gte' | '$eq'
-export type DateFiltersValue = Partial<Record<DateFiltersOperators, number>>
 
-export type QueryFilters = {
-    title?: string
-} & Partial<Record<DateFiltersKey, DateFiltersValue>>
+export type TOperatorKeys = '$lte' | '$gte'
+
+export type TDateFilterOperators = Partial<Record<TOperatorKeys, string>>
+
+export type TDateFilter = Record<'createdDate', TDateFilterOperators>
+export type TTitleFilter = Record<'title', string>
+
+export type QueryFilters = Partial<TDateFilter> & Partial<TTitleFilter>

@@ -3,7 +3,6 @@ import {
     ApiPropertyOptional,
 } from '@nestjs/swagger/dist/decorators/api-property.decorator'
 import { FileDTO } from '../files/dto/file.dto'
-import { ApiHideProperty } from '@nestjs/swagger'
 
 export class NewsDTO {
     @ApiProperty()
@@ -25,7 +24,7 @@ export class NewsDTO {
     readonly createdYear?: number
 
     @ApiPropertyOptional()
-    readonly createdDate?: string
+    readonly createdDate?: Date
 
     @ApiPropertyOptional({ type: [FileDTO], default: [] })
     readonly files: FileDTO[] | []
