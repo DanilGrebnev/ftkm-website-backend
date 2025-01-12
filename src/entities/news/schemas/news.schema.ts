@@ -40,14 +40,14 @@ export const NewsSchema = SchemaFactory.createForClass(News)
 
 NewsSchema.pre('save', function (next) {
     const now = new Date()
-
+    
     this.createdDay = now.getDate()
 
     this.createdMonth = now.getMonth() + 1
 
     this.createdYear = now.getFullYear()
 
-    const date = `${this.createdYear}-${addZeroBeforeDate(this.createdMonth)}-${this.createdDay}`
+    const date = `${this.createdYear}-${addZeroBeforeDate(this.createdMonth)}-${addZeroBeforeDate(this.createdDay)}`
 
     this.createdDate = new Date(date).getTime()
 
