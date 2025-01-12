@@ -16,15 +16,6 @@ export class News {
     video: string
 
     @Prop({ required: false })
-    createdDay?: number
-
-    @Prop({ required: false })
-    createdYear?: number
-
-    @Prop()
-    createdMonth?: number
-
-    @Prop({ required: false })
     createdDate?: number
 
     @Prop({ required: false, default: [] })
@@ -40,14 +31,14 @@ export const NewsSchema = SchemaFactory.createForClass(News)
 
 NewsSchema.pre('save', function (next) {
     const now = new Date()
-    
-    this.createdDay = now.getDate()
 
-    this.createdMonth = now.getMonth() + 1
+    const createdDay = addZeroBeforeDate(now.getDate())
 
-    this.createdYear = now.getFullYear()
+    const createdMonth = addZeroBeforeDate(now.getMonth() + 1)
 
-    const date = `${this.createdYear}-${addZeroBeforeDate(this.createdMonth)}-${addZeroBeforeDate(this.createdDay)}`
+    const createdYear = now.getFullYear()
+
+    const date = `${createdYear}-${createdMonth}-${createdDay}`
 
     this.createdDate = new Date(date).getTime()
 

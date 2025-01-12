@@ -15,15 +15,6 @@ export class NewsDTO {
     video: string
 
     @ApiPropertyOptional()
-    readonly createdDay?: number
-
-    @ApiPropertyOptional()
-    readonly createdMonth?: number
-
-    @ApiPropertyOptional()
-    readonly createdYear?: number
-
-    @ApiPropertyOptional()
     readonly createdDate?: Date
 
     @ApiPropertyOptional({ type: [FileDTO], default: [] })
